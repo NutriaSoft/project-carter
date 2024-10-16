@@ -4,7 +4,7 @@ import {
 	UsersIcon,
 } from "@heroicons/react/20/solid";
 import type { ActionFunctionArgs } from "@remix-run/node";
-import { Form, json, useActionData } from "@remix-run/react";
+import { Form, json, redirect, useActionData } from "@remix-run/react";
 import {
 	type FlatErrors,
 	email,
@@ -16,7 +16,7 @@ import {
 	safeParse,
 	string,
 } from "valibot";
-// import { auth_client } from "~/utils/auth-client.server";
+import { auth_client } from "~/utils/auth-client.server";
 
 const RegisterSchema = object({
 	name: pipe(
@@ -37,12 +37,14 @@ const RegisterSchema = object({
 
 export async function action({ request }: ActionFunctionArgs) {
 	const formData = await request.formData();
+
 	const password = String(formData.get("password"));
 	const email = String(formData.get("email"));
 	const name = String(formData.get("name"));
+
 	const errors: {
 		formError?: FlatErrors<typeof RegisterSchema>["nested"];
-		// authError?: Awaited<ReturnType<typeof auth_client.signUp.email>>["error"];
+		authError?: Awaited<ReturnType<typeof auth_client.signUp.email>>["error"];
 	} = {};
 
 	const form = safeParse(
@@ -57,19 +59,23 @@ export async function action({ request }: ActionFunctionArgs) {
 		return json(errors);
 	}
 
-	// const { data, error } = await auth_client.signUp.email({
-	// 	email,
-	// 	password,
-	// 	name,
-	// });
-	// console.log("succes", form, { data, error });
-	// if (error) {
-	// 	// errors.authError = error;
-	// 	return json(errors);
-	// }
-	// if (!error) return redirect("/dashboard");
+	const { data, error } = await auth_client.signUp.email({
+		email,
+		password,
+		name,
+		callbackURL: `${request.headers.get("origins")}/sing-in`,
+	});
 
-	return null;
+	if (error) {
+		errors.authError = error;
+		return json(errors);
+	}
+	// auth_client.sendVerificationEmail({
+	// 	email,
+	// 	callbackURL: `${request.headers.get("origins")}/sing-in`,
+	// });
+	console.log("succes", form, { data, error });
+	if (!error) return redirect("./success");
 }
 
 export default function SingUp() {
@@ -88,11 +94,7 @@ export default function SingUp() {
 				</h2>
 			</div>
 
-			<Form
-				action="#"
-				method="post"
-				className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm"
-			>
+			<Form method="post" className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
 				<div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-6">
 					<div className="col-span-full">
 						<label

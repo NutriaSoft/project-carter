@@ -2971,7 +2971,7 @@ ${n}`;
   function zl(e) {
     Ht(e, { conflictCheck: "warn" });
   }
-  var __dirname = "/home/yigs-isc/project-carter/packages/database/prisma/generate/client/runtime", __filename = "/home/yigs-isc/project-carter/packages/database/prisma/generate/client/runtime/library.js";
+  var __dirname = "/home/yigs/project-carter/packages/database/prisma/generate/client/runtime", __filename = "/home/yigs/project-carter/packages/database/prisma/generate/client/runtime/library.js";
   var Yl = Object.create;
   var Lr = Object.defineProperty;
   var Zl = Object.getOwnPropertyDescriptor;
@@ -5949,7 +5949,7 @@ Expected string or undefined.`);
 
 // prisma/generate/client/index.js
 var require_client = __commonJS((exports) => {
-  var __dirname = "/home/yigs-isc/project-carter/packages/database/prisma/generate/client";
+  var __dirname = "/home/yigs/project-carter/packages/database/prisma/generate/client";
   Object.defineProperty(exports, "__esModule", { value: true });
   var {
     PrismaClientKnownRequestError: PrismaClientKnownRequestError2,
@@ -6069,7 +6069,7 @@ var require_client = __commonJS((exports) => {
         value: "prisma-client-js"
       },
       output: {
-        value: "/home/yigs-isc/project-carter/packages/database/prisma/generate/client",
+        value: "/home/yigs/project-carter/packages/database/prisma/generate/client",
         fromEnvVar: null
       },
       config: {
@@ -6085,11 +6085,12 @@ var require_client = __commonJS((exports) => {
       previewFeatures: [
         "prismaSchemaFolder"
       ],
-      sourceFilePath: "/home/yigs-isc/project-carter/packages/database/prisma/schema/schema.prisma",
+      sourceFilePath: "/home/yigs/project-carter/packages/database/prisma/schema/schema.prisma",
       isCustomOutput: true
     },
     relativeEnvPaths: {
-      rootEnvPath: null
+      rootEnvPath: null,
+      schemaEnvPath: "../../../.env"
     },
     relativePath: "../../schema",
     clientVersion: "5.20.0",
