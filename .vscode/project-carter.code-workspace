@@ -1,0 +1,28 @@
+{
+	"folders": [
+		{
+			"path": "../apps",
+			"name": "Apps 🖥️"
+		},
+		{
+			"path": "../packages",
+			"name": "Packages 📦"
+		},
+		{
+			"path": "../",
+			"name": "Root 🚙"
+		}
+	],
+	"settings": {
+		"eslint.workingDirectories": [{ "mode": "auto" }],
+		"prettier.enable": false,
+		"npm.packageManager": "bun",
+		"editor.codeActionsOnSave": {
+			"source.organizeImports.biome": "explicit",
+			"quickfix.biome": "explicit"
+		}
+	},
+	"extensions": {
+		"recommendations": []
+	}
+}

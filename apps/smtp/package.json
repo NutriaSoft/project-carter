@@ -1,0 +1,19 @@
+{
+	"name": "smtp",
+	"version": "1.0.50",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "bun run --watch src/index.ts"
+	},
+	"dependencies": {
+		"@types/maildev": "^0.0.7",
+		"elysia": "latest",
+		"elysia-connect-middleware": "^0.0.3",
+		"http-proxy-middleware": "^3.0.3",
+		"maildev": "^2.1.0"
+	},
+	"devDependencies": {
+		"bun-types": "latest"
+	},
+	"module": "src/index.js"
+}

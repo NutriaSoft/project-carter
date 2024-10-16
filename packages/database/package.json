@@ -1,0 +1,22 @@
+{
+	"name": "@package/database",
+	"module": "index.js",
+	"types": "index.ts",
+	"type": "module",
+	"main": "index.js",
+	"scripts": {
+		"build": "bun run build.ts",
+		"generate:dev": "bun prisma generate dev",
+		"postinstall": "bun prisma generate && bun run ./build.ts"
+	},
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	},
+	"dependencies": {
+		"@prisma/client": "5.20.0",
+		"prisma": "^5.20.0"
+	}
+}
