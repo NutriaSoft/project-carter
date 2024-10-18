@@ -10,6 +10,7 @@ import {
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { cn } from "@package/ui/utils";
 import { NavLink } from "@remix-run/react";
+import type { NavLinkRenderProps } from "react-router-dom";
 
 const user = {
 	name: "Tom Cook",
@@ -19,11 +20,11 @@ const user = {
 };
 
 const navigation = [
-	{ name: "Dashboard", href: "/dashboard", current: true },
-	{ name: "team", href: "./teams", current: false },
-	{ name: "Projects", href: "./projects", current: false },
-	{ name: "Calendar", href: "./calendar", current: false },
-	{ name: "Reports", href: "./calendar", current: false },
+	{ name: "Dashboard", href: "./" },
+	{ name: "team", href: "./teams" },
+	{ name: "Projects", href: "./projects" },
+	{ name: "Calendar", href: "./calendar" },
+	{ name: "Reports", href: "./reports" },
 ];
 
 const userNavigation = [
@@ -127,24 +128,27 @@ export function Navbar() {
 			</div>
 
 			<DisclosurePanel className="md:hidden">
-				<div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
+				<section className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
 					{navigation.map((item) => (
-						<DisclosureButton
-							key={item.name}
-							as="a"
-							href={item.href}
-							aria-current={item.current ? "page" : undefined}
-							className={cn(
-								item.current
-									? "bg-gray-900 text-white"
-									: "text-gray-300 hover:bg-gray-700 hover:text-white",
-								"block rounded-md px-3 py-2 text-base font-medium",
-							)}
-						>
-							{item.name}
+						<DisclosureButton as="div" key={item.name}>
+							<NavLink
+								to={item.href}
+								key={item.name}
+								end
+								className={({ isActive }: NavLinkRenderProps) =>
+									cn(
+										isActive
+											? "bg-gray-900 text-white"
+											: "text-gray-300 hover:bg-gray-700 hover:text-white",
+										"block rounded-md px-3 py-2 text-base font-medium capitalize",
+									)
+								}
+							>
+								{item.name}
+							</NavLink>
 						</DisclosureButton>
 					))}
-				</div>
+				</section>
 				<div className="border-t border-gray-700 pb-3 pt-4">
 					<div className="flex items-center px-5">
 						<div className="flex-shrink-0">
