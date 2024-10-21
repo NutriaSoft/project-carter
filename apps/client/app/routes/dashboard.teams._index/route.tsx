@@ -1,259 +1,111 @@
-const people = [
+import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
+import { UserCircleIcon } from "@heroicons/react/24/outline";
+import { cn } from "@package/ui/utils";
+
+const projects = [
 	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+		name: "Graph API",
+		initials: "GA",
+		href: "#",
+		members: 16,
+		bgColor: "bg-pink-600",
 	},
 	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-	},	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-	},	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-	},	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-	},	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-	},	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-	},	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-	},	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-	},	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-	},	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-	},	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-	},	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-	},	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-	},	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-	},	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-	},	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-	},	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-	},	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-	},	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-	},	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+		name: "Component Design",
+		initials: "CD",
+		href: "#",
+		members: 12,
+		bgColor: "bg-purple-600",
 	},
-	// More people...
+	{
+		name: "Templates",
+		initials: "T",
+		href: "#",
+		members: 16,
+		bgColor: "bg-yellow-500",
+	},
+	{
+		name: "React Components",
+		initials: "RC",
+		href: "#",
+		members: 8,
+		bgColor: "bg-green-500",
+	},
+	{
+		name: "Graph API",
+		initials: "GA",
+		href: "#",
+		members: 16,
+		bgColor: "bg-pink-600",
+	},
+	{
+		name: "Component Design",
+		initials: "CD",
+		href: "#",
+		members: 12,
+		bgColor: "bg-purple-600",
+	},
+	{
+		name: "Templates",
+		initials: "T",
+		href: "#",
+		members: 16,
+		bgColor: "bg-yellow-500",
+	},
+	{
+		name: "React Components",
+		initials: "RC",
+		href: "#",
+		members: 8,
+		bgColor: "bg-green-500",
+	},
 ];
 
-export default function Index() {
+export default function Example() {
 	return (
-		<div className="mt-8 flow-root">
-			<div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-				<div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-					<table className="min-w-full divide-y divide-gray-300">
-						<thead>
-							<tr>
-								<th
-									scope="col"
-									className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
+		<div>
+			<h2 className="text-sm font-medium text-gray-500">Pinned Projects</h2>
+			<ul className="mt-3 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
+				{projects.map((project) => (
+					<li
+						key={project.name}
+						className="col-span-1 flex rounded-md shadow-sm"
+					>
+						<div
+							className={cn(
+								project.bgColor,
+								"flex w-16 flex-shrink-0 items-center justify-center rounded-l-md text-sm font-medium text-white",
+							)}
+						>
+							{/* {project.initials} */}
+							<UserCircleIcon className="size-8" />
+						</div>
+						<div className="flex flex-1 items-center justify-between truncate rounded-r-md border-b border-r border-t border-gray-200 bg-white">
+							<div className="flex-1 truncate px-4 py-2 text-sm">
+								<a
+									href={project.href}
+									className="font-medium text-gray-900 hover:text-gray-600"
 								>
-									Name
-								</th>
-								<th
-									scope="col"
-									className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+									{project.name}
+								</a>
+								<p className="text-gray-500">{project.members} Members</p>
+							</div>
+							<div className="flex-shrink-0 pr-2">
+								<button
+									type="button"
+									className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-transparent bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
 								>
-									Title
-								</th>
-								<th
-									scope="col"
-									className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-								>
-									Status
-								</th>
-								<th
-									scope="col"
-									className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-								>
-									Role
-								</th>
-								<th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
-									<span className="sr-only">Edit</span>
-								</th>
-							</tr>
-						</thead>
-						<tbody className="divide-y divide-gray-200 bg-white">
-							{people.map((person) => (
-								<tr key={person.email}>
-									<td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
-										<div className="flex items-center">
-											<div className="h-11 w-11 flex-shrink-0">
-												<img
-													alt=""
-													src={person.image}
-													className="h-11 w-11 rounded-full"
-												/>
-											</div>
-											<div className="ml-4">
-												<div className="font-medium text-gray-900">
-													{person.name}
-												</div>
-												<div className="mt-1 text-gray-500">{person.email}</div>
-											</div>
-										</div>
-									</td>
-									<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-										<div className="text-gray-900">{person.title}</div>
-										<div className="mt-1 text-gray-500">
-											{person.department}
-										</div>
-									</td>
-									<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-										<span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-											Active
-										</span>
-									</td>
-									<td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-										{person.role}
-									</td>
-									<td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-										<div className="text-indigo-600 hover:text-indigo-900">
-											Edit<span className="sr-only">, {person.name}</span>
-										</div>
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
-				</div>
-			</div>
+									<span className="sr-only">Open options</span>
+									<EllipsisVerticalIcon
+										aria-hidden="true"
+										className="h-5 w-5"
+									/>
+								</button>
+							</div>
+						</div>
+					</li>
+				))}
+			</ul>
 		</div>
 	);
 }

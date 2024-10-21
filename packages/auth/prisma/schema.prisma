@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -15,6 +15,7 @@ model User {
   image         String?
   createdAt     DateTime
   updatedAt     DateTime
+  age           Int?
   Session       Session[]
   Account       Account[]
 
@@ -28,7 +29,7 @@ model Session {
   ipAddress String?
   userAgent String?
   userId    String
-  users     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("session")
 }
@@ -38,7 +39,7 @@ model Account {
   accountId    String
   providerId   String
   userId       String
-  users        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken  String?
   refreshToken String?
   idToken      String?

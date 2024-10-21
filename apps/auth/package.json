@@ -1,9 +1,14 @@
 {
 	"name": "auth",
 	"version": "1.0.50",
+	"type": "module",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "bun run --hot src/index.ts"
+		"dev": "bun run --hot src/index.ts",
+		"lint": "biome check --error-on-warnings ./src",
+		"format": "biome format --write ./app",
+		"lint:fix": "biome lint --write ./src",
+		"typecheck": "tsc --noemit"
 	},
 	"dependencies": {
 		"@chneau/elysia-logger": "^1.0.8",

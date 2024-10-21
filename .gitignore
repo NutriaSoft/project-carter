@@ -36,3 +36,12 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+
+
+apps/auth/prisma/client/
+
+/bun.lockb
+
+**/bun.lockb
+**/dev.db-journal

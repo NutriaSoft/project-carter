@@ -10,7 +10,8 @@
 		"ignore": [
 			"**/generate/**",
 			"packages/database/index.js",
-			"client/app/entry.*.tsx"
+			"client/app/entry.*.tsx",
+			"auth/prisma/client"
 		]
 	},
 	"formatter": {

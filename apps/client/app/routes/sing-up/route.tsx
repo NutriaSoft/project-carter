@@ -16,7 +16,7 @@ import {
 	safeParse,
 	string,
 } from "valibot";
-import { auth_client } from "~/utils/auth-client.server";
+import { auth_client } from "~/utils/auth.server";
 
 const RegisterSchema = object({
 	name: pipe(
@@ -63,17 +63,18 @@ export async function action({ request }: ActionFunctionArgs) {
 		email,
 		password,
 		name,
-		callbackURL: `${request.headers.get("origins")}/sing-in`,
+
+		// callbackURL: `${request.headers.get("origins")}/sing-in`,
 	});
 
 	if (error) {
 		errors.authError = error;
 		return json(errors);
 	}
-	// auth_client.sendVerificationEmail({
-	// 	email,
-	// 	callbackURL: `${request.headers.get("origins")}/sing-in`,
-	// });
+	auth_client.sendVerificationEmail({
+		email,
+		callbackURL: `${request.headers.get("origins")}/sing-in`,
+	});
 	console.log("succes", form, { data, error });
 	if (!error) return redirect("./success");
 }
@@ -116,6 +117,7 @@ export default function SingUp() {
 								type="name"
 								aria-invalid="true"
 								aria-describedby="name-error"
+								defaultValue={"name awasome"}
 								placeholder="name"
 								className="block w-full rounded-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 							/>
@@ -156,6 +158,7 @@ export default function SingUp() {
 								aria-invalid="true"
 								aria-describedby="email-error"
 								placeholder="you@example.com"
+								defaultValue={"you@example.com"}
 								className="block w-full rounded-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 							/>
 							{serverAction?.formError?.email ? (
@@ -195,6 +198,7 @@ export default function SingUp() {
 								aria-invalid="true"
 								aria-describedby="password-error"
 								placeholder="*********"
+								defaultValue={"123321321"}
 								className="block w-full rounded-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 							/>
 

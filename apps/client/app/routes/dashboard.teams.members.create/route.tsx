@@ -1,101 +1,64 @@
-// import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
-import { client } from "@package/auth";
-import type { ActionFunctionArgs } from "@remix-run/node";
-import { Form, json, redirect } from "@remix-run/react";
-import { flatten, nonEmpty, object, pipe, safeParse, string } from "valibot";
-
-const CreateTeamSchema = object({
-	name: pipe(
-		string("Your name must be a string."),
-		nonEmpty("Please enter your name."),
-	),
-	// logo: pipe(
-	// 	string("Your password must be a string."),
-	// 	nonEmpty("Please enter your password."),
-	// ),
-});
-
-export async function action({ request: { formData } }: ActionFunctionArgs) {
-	const name = String((await formData()).get("name_team"));
-
-	const form = safeParse(CreateTeamSchema, { name }, { abortEarly: true });
-
-	if (!form.success) {
-		console.error("err", flatten<typeof CreateTeamSchema>(form.issues).nested);
-		const formError = flatten<typeof CreateTeamSchema>(form.issues).nested;
-		return json({ formError });
-	}
-
-	const { data, error } = await client.organization.create({
-		name: name,
-		slug: `isc-${name}`,
-		// logo: "https://example.com/logo.png",
-	});
-
-	if (error) return json({ authError: error });
-
-	console.log("succes", form, { data, error });
-	return redirect("./success");
-}
+import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 
 export default function Index() {
 	return (
-		<Form>
+		<form className="pt-8">
 			<div className="space-y-12">
-				<div className="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
-					<div>
-						<h2 className="text-base font-semibold leading-7 text-gray-900">
-							Team
-						</h2>
-						<p className="mt-1 text-sm leading-6 text-gray-600">
-							This information will be displayed publicly so be careful what you
-							share.
-						</p>
-					</div>
+				<div className="border-b border-gray-900/10 pb-12">
+					<h2 className="text-base font-semibold leading-7 text-gray-900">
+						Profile
+					</h2>
+					<p className="mt-1 text-sm leading-6 text-gray-600">
+						This information will be displayed publicly so be careful what you
+						share.
+					</p>
 
-					<div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+					<div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
 						<div className="sm:col-span-4">
 							<label
-								htmlFor="name"
-								className="block text-sm font-medium leading-6 text-gray-900 capitalize"
+								htmlFor="username"
+								className="block text-sm font-medium leading-6 text-gray-900"
 							>
-								team name
+								Username
 							</label>
 							<div className="mt-2">
 								<div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+									<span className="flex select-none items-center pl-3 text-gray-500 sm:text-sm">
+										workcation.com/
+									</span>
 									<input
-										id="name-input"
-										name="name"
+										id="username"
+										name="username"
 										type="text"
-										placeholder=" Awesome Team Name :)"
+										placeholder="janesmith"
+										autoComplete="username"
 										className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
 									/>
 								</div>
 							</div>
 						</div>
 
-						{/* <div className="sm:col-span-4">
+						<div className="col-span-full">
 							<label
-								htmlFor="name"
-								className="block text-sm font-medium leading-6 text-gray-900 capitalize"
+								htmlFor="about"
+								className="block text-sm font-medium leading-6 text-gray-900"
 							>
-								name
+								About
 							</label>
 							<div className="mt-2">
-								<div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-									<input
-										id="name-input"
-										name="name"
-										type="text"
-										placeholder="www.example.com"
-										className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-									/>
-								</div>
+								<textarea
+									id="about"
+									name="about"
+									rows={3}
+									className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+									defaultValue={""}
+								/>
 							</div>
-						</div> */}
+							<p className="mt-3 text-sm leading-6 text-gray-600">
+								Write a few sentences about yourself.
+							</p>
+						</div>
 
-						{/* photo */}
-						{/* 
 						<div className="col-span-full">
 							<label
 								htmlFor="photo"
@@ -150,21 +113,19 @@ export default function Index() {
 									</p>
 								</div>
 							</div>
-						</div> */}
+						</div>
 					</div>
 				</div>
 
-				{/* <div className="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
-					<div>
-						<h2 className="text-base font-semibold leading-7 text-gray-900">
-							Personal Information
-						</h2>
-						<p className="mt-1 text-sm leading-6 text-gray-600">
-							Use a permanent address where you can receive mail.
-						</p>
-					</div>
+				<div className="border-b border-gray-900/10 pb-12">
+					<h2 className="text-base font-semibold leading-7 text-gray-900">
+						Personal Information
+					</h2>
+					<p className="mt-1 text-sm leading-6 text-gray-600">
+						Use a permanent address where you can receive mail.
+					</p>
 
-					<div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+					<div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
 						<div className="sm:col-span-3">
 							<label
 								htmlFor="first-name"
@@ -314,18 +275,16 @@ export default function Index() {
 					</div>
 				</div>
 
-				<div className="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
-					<div>
-						<h2 className="text-base font-semibold leading-7 text-gray-900">
-							Notifications
-						</h2>
-						<p className="mt-1 text-sm leading-6 text-gray-600">
-							We'll always let you know about important changes, but you pick
-							what else you want to hear about.
-						</p>
-					</div>
+				<div className="border-b border-gray-900/10 pb-12">
+					<h2 className="text-base font-semibold leading-7 text-gray-900">
+						Notifications
+					</h2>
+					<p className="mt-1 text-sm leading-6 text-gray-600">
+						We&apos;ll always let you know about important changes, but you pick
+						what else you want to hear about.
+					</p>
 
-					<div className="max-w-2xl space-y-10 md:col-span-2">
+					<div className="mt-10 space-y-10">
 						<fieldset>
 							<legend className="text-sm font-semibold leading-6 text-gray-900">
 								By Email
@@ -449,7 +408,7 @@ export default function Index() {
 							</div>
 						</fieldset>
 					</div>
-				</div> */}
+				</div>
 			</div>
 
 			<div className="mt-6 flex items-center justify-end gap-x-6">
@@ -466,6 +425,6 @@ export default function Index() {
 					Save
 				</button>
 			</div>
-		</Form>
+		</form>
 	);
 }

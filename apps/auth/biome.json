@@ -1,0 +1,24 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.5.2/schema.json",
+	"organizeImports": {
+		"enabled": true
+	},
+	"formatter": { "enabled": true, "indentStyle": "tab" },
+	"files": {
+		"ignoreUnknown": false,
+		"ignore": ["./prisma/client"]
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"style": {
+				"useTemplate": "off"
+			},
+			"performance": {
+				"noDelete": "off"
+			},
+			"recommended": true
+		}
+	},
+	"javascript": { "formatter": { "quoteStyle": "double" } }
+}
