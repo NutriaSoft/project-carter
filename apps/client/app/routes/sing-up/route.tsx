@@ -59,23 +59,18 @@ export async function action({ request }: ActionFunctionArgs) {
 		return json(errors);
 	}
 
-	const { data, error } = await auth_client.signUp.email({
+	const { error } = await auth_client.signUp.email({
 		email,
 		password,
 		name,
-
-		// callbackURL: `${request.headers.get("origins")}/sing-in`,
+		callbackURL: `${request.headers.get("origin")}/sing-in`,
 	});
 
 	if (error) {
 		errors.authError = error;
 		return json(errors);
 	}
-	auth_client.sendVerificationEmail({
-		email,
-		callbackURL: `${request.headers.get("origins")}/sing-in`,
-	});
-	console.log("succes", form, { data, error });
+	// console.log("succes", form, { data, error });
 	if (!error) return redirect("./success");
 }
 

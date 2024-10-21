@@ -5,11 +5,9 @@ import { Elysia } from "elysia";
 const app = new Elysia()
 	.use(logger())
 	.derive(({ request }) => AuthMiddleware(request))
-	.all("/api/auth/*", (ctx) => AuthHandler(ctx))
+	.all("/api/auth/*", AuthHandler)
 	.get("/user", ({ user, session }) => AuthUserInfo(user, session))
 	.listen(4000);
-
-console.log(process.env);
 
 console.log(
 	`🦊 Elysia AUTH is running at ${app.server?.hostname}:${app.server?.port}`,

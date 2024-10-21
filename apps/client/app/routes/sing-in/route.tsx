@@ -1,6 +1,17 @@
 import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
-import { Form, Link } from "@remix-run/react";
-// import { auth } from "@repo/auth";
+import { Form, Link, json, redirect, useActionData } from "@remix-run/react";
+import {
+	type FlatErrors,
+	email,
+	flatten,
+	minLength,
+	nonEmpty,
+	object,
+	pipe,
+	safeParse,
+	string,
+} from "valibot";
+import { auth_client } from "~/utils/auth.server";
 
 export const meta: MetaFunction = () => {
 	return [
@@ -9,28 +20,54 @@ export const meta: MetaFunction = () => {
 	];
 };
 
-export async function action(actionFns: ActionFunctionArgs) {
-	const { request } = actionFns;
-	const body = await request.formData();
-	const email = body.get("email")?.toString();
-	const password = body.get("password")?.toString();
+const LoginSchema = object({
+	email: pipe(
+		string("Your email must be a string."),
+		nonEmpty("Please enter your email."),
+		email("The email address is badly formatted."),
+	),
+	password: pipe(
+		string("Your password must be a string."),
+		nonEmpty("Please enter your password."),
+		minLength(8, "Your password must have 8 characters or more."),
+	),
+});
 
-	if (!email || !password) throw new Error("Email or Password undefined");
-	// const singIn = await auth.api.signInEmail({
-	// 	body: {
-	// 		email,
-	// 		password,
-	// 	},
-	// 	request,
-	// });
+export async function action({ request }: ActionFunctionArgs) {
+	const formData = await request.formData();
+	const password = String(formData.get("password"));
+	const email = String(formData.get("email"));
 
-	// if (!singIn) throw new Error("Email or Password undefined");
-	// return singIn;
-	// return redirect(`/todos/${todo.id}`);
+	const form = safeParse(
+		LoginSchema,
+		{ email, password },
+		{ abortEarly: true },
+	);
+
+	const errors: {
+		formError?: FlatErrors<typeof LoginSchema>["nested"];
+		authError?: Awaited<ReturnType<typeof auth_client.signUp.email>>["error"];
+	} = {};
+
+	if (!form.success) {
+		console.error("err", flatten<typeof LoginSchema>(form.issues).nested);
+		errors.formError = flatten<typeof LoginSchema>(form.issues).nested;
+		return json(errors);
+	}
+
+	const { error } = await auth_client.signIn.email({
+		email,
+		password,
+		callbackURL: `${request.headers.get("origin")}/dashboard`,
+	});
+
+	if (error) return json(errors);
+
+	return redirect("./success");
 }
 
 export default function Route() {
-	// const _action = useActionData();
+	const serverAction = useActionData<typeof action>();
 
 	return (
 		<div className="flex  flex-1 flex-col justify-center px-6 py-12 lg:px-8 h-dvh">
@@ -63,6 +100,11 @@ export default function Route() {
 								className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 							/>
 						</div>
+						{serverAction?.formError?.name ? (
+							<p id="email-error" className="mt-2 text-sm text-red-600">
+								{serverAction?.formError?.name}
+							</p>
+						) : null}
 					</div>
 					<div>
 						<div className="flex items-center justify-between">

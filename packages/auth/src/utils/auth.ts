@@ -1,14 +1,12 @@
-import { PrismaClient } from "@prisma/client";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { admin, organization } from "better-auth/plugins";
 import type { Context } from "elysia";
 import { verificationEmail } from "./smtp";
 
+import { PrismaClient } from "@prisma/client/index.js";
 const prisma = new PrismaClient();
-
 export const auth = betterAuth({
-	secret: "awsone",
 	// plugins: [admin(), organization()],
 	user: {
 		additionalFields: {
@@ -25,14 +23,25 @@ export const auth = betterAuth({
 		disabled: false,
 		verboseLogging: true,
 	},
+	advanced: {
+		disableCSRFCheck: true,
+		crossSubDomainCookies: {
+			enabled: true,
+			// domain: "example.com" // Optional. Defaults to the base url domain
+		},
+	},
+	emailVerification: {
+		sendOnSignUp: true,
+		sendVerificationEmail: verificationEmail,
+		// sendVerificationEmail: async (user, url, token) => {
+		// 	const origin_url = new URL(url);
+
+		// 	console.log(origin_url, user);
+		// },
+	},
 	emailAndPassword: {
 		enabled: true,
-		sendEmailVerificationOnSignUp: true,
-		sendVerificationEmail: async (url: string, user: unknown) => {
-			const origin_url = new URL(url);
-
-			console.log(origin_url);
-		},
+		requireEmailVerification: true,
 	},
 });
 

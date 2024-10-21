@@ -1,3 +1,4 @@
+import type { User } from "better-auth";
 import { createTransport } from "nodemailer";
 
 export const smtp_transporter = createTransport({
@@ -10,7 +11,11 @@ export const smtp_transporter = createTransport({
 	},
 });
 
-export const verificationEmail = async (url: string, user: unknown) => {
+export const verificationEmail = async (
+	user: User,
+	url: string,
+	token: string,
+) => {
 	const origin_url = new URL(url);
 
 	console.log(origin_url);
