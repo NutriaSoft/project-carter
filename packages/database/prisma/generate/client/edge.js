@@ -160,7 +160,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/yigs/project-carter/packages/database/prisma/generate/client",
+      "value": "/home/yigs-isc/project-carter/packages/database/prisma/generate/client",
       "fromEnvVar": null
     },
     "config": {
@@ -176,12 +176,11 @@ const config = {
     "previewFeatures": [
       "prismaSchemaFolder"
     ],
-    "sourceFilePath": "/home/yigs/project-carter/packages/database/prisma/schema/schema.prisma",
+    "sourceFilePath": "/home/yigs-isc/project-carter/packages/database/prisma/schema/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null,
-    "schemaEnvPath": "../../../.env"
+    "rootEnvPath": null
   },
   "relativePath": "../../schema",
   "clientVersion": "5.20.0",

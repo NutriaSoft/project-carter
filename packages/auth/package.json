@@ -19,9 +19,9 @@
 	"scripts": {
 		"auth:generate": "bunx @better-auth/cli generate",
 		"prisma:format": "bunx prisma format",
-		"prisma:generate": "bunx @prisma generate",
-		"prisma:push": "bunx @prisma push",
-		"prisma:pull": "bunx @prisma pull",
-		"postinstall": "bun run auth:generate && prisma:format && prisma:generate && prisma:push && prisma:pull"
+		"prisma:generate": "bunx prisma generate",
+		"prisma:push": "bunx prisma db push",
+		"prisma:pull": "bunx prisma db pull",
+		"postinstall": "bun run auth:generate && bun run prisma:format && bun run prisma:generate && bun run prisma:push && bun run prisma:pull"
 	}
 }
