@@ -1,9 +1,9 @@
 import { PrismaClient } from "@prisma/client/index.js";
-import { betterAuth } from "better-auth";
+import { type User, betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { admin, organization } from "better-auth/plugins";
 import type { Context } from "elysia";
-import { verificationEmail } from "./smtp";
+import { smtp_transporter, verificationEmail } from "./smtp";
 const prisma = new PrismaClient();
 
 export const auth = betterAuth({
@@ -32,7 +32,21 @@ export const auth = betterAuth({
 	},
 	emailVerification: {
 		sendOnSignUp: true,
-		sendVerificationEmail: verificationEmail,
+		async sendVerificationEmail(user: User, url: string, token: string) {
+			const { messageId } = await smtp_transporter.sendMail({
+				from: '"Project Carter" <project_carter@ethereal.email>',
+				to: "bar@example.com",
+				subject: "Account Verification 📨",
+				html: `
+							<b>Hello world HTML</b>
+							<span style="color:white">${url}</span>
+							<p style="color:white">${JSON.stringify(user)} </p>
+						`,
+			});
+
+			console.log("Message sent: %s", messageId); // Message sent: <d786aa62-4e0a-070a-47ed-0b0666549519@ethereal.email>
+		},
+		sendEmailVerificationOnSignUp: true,
 	},
 	emailAndPassword: {
 		enabled: true,

@@ -19,17 +19,4 @@ export const verificationEmail = async (
 	const origin_url = new URL(url);
 
 	console.log(origin_url);
-
-	const { messageId } = await smtp_transporter.sendMail({
-		from: '"Project Carter" <project_carter@ethereal.email>',
-		to: "bar@example.com",
-		subject: "Account Verification 📨",
-		html: `
-          <b>Hello world HTML</b>
-          <span style="color:white">${url}</span>
-          <p style="color:white">${JSON.stringify(user)} </p>
-        `,
-	});
-
-	console.log("Message sent: %s", messageId); // Message sent: <d786aa62-4e0a-070a-47ed-0b0666549519@ethereal.email>
 };
