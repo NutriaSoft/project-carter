@@ -8,27 +8,34 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String       @id
   name          String
-  email         String    @unique
+  email         String       @unique
   emailVerified Boolean
   image         String?
   createdAt     DateTime
   updatedAt     DateTime
   age           Int?
+  banExpires    Int?
+  banReason     String?
+  banned        Boolean?
+  role          String?
   Account       Account[]
+  Invitation    Invitation[]
   Session       Session[]
 
   @@map("user")
 }
 
 model Session {
-  id        String   @id
-  expiresAt DateTime
-  ipAddress String?
-  userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                   String   @id
+  expiresAt            DateTime
+  ipAddress            String?
+  userAgent            String?
+  userId               String
+  impersonatedBy       String?
+  activeOrganizationId String?
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("session")
 }
@@ -55,4 +62,43 @@ model Verification {
   expiresAt  DateTime
 
   @@map("verification")
+}
+
+model Organization {
+  id         String       @id
+  name       String
+  slug       String?      @unique
+  logo       String?
+  createdAt  DateTime
+  metadata   String?
+  Invitation Invitation[]
+  Member     Member[]
+
+  @@map("organization")
+}
+
+model Member {
+  id             String       @id
+  organizationId String
+  userId         String
+  email          String
+  role           String
+  createdAt      DateTime
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("member")
+}
+
+model Invitation {
+  id             String       @id
+  organizationId String
+  email          String
+  role           String?
+  status         String
+  expiresAt      DateTime
+  inviterId      String
+  user           User         @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("invitation")
 }

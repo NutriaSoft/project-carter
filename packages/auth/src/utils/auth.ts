@@ -1,13 +1,25 @@
-import { PrismaClient } from "@prisma/client/index.js";
+import { Prisma, PrismaClient } from "@prisma/client/index.js";
 import { type User, betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { admin, organization } from "better-auth/plugins";
 import type { Context } from "elysia";
 import { smtp_transporter, verificationEmail } from "./smtp";
+
 const prisma = new PrismaClient();
 
 export const auth = betterAuth({
-	// plugins: [admin(), organization()],
+	plugins: [
+		admin(),
+		organization({
+			async allowUserToCreateOrganization(user) {
+				const findUser = await prisma.user.findFirst({
+					where: { ...user },
+				});
+
+				return findUser?.role === "admin";
+			},
+		}),
+	],
 	user: {
 		additionalFields: {
 			age: {

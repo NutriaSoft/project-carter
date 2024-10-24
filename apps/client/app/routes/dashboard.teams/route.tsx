@@ -1,9 +1,17 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { BarsArrowUpIcon, UsersIcon } from "@heroicons/react/24/outline";
 import { cn } from "@package/ui/utils";
-import { NavLink, Outlet } from "@remix-run/react";
+import { NavLink, Outlet, useLocation } from "@remix-run/react";
 import SectionNav from "./section-head";
+
+/*
+	! es de admitir que es la peor implementacion que se me ocurrio para manejar el enrutamiento del boton create
+	? Refact Router: create btn
+**/
+
 export default function DashboardTeams() {
+	const location = useLocation();
+
 	return (
 		<>
 			<header className="bg-white shadow">
@@ -70,16 +78,22 @@ export default function DashboardTeams() {
 						>
 							Share
 						</button>
+
 						<NavLink
 							end
-							caseSensitive
-							to="./create"
-							relative="path"
+							to={`${location.pathname}/create`.replace(
+								/\/create\/create/,
+								"/create",
+							)}
+							relative="route"
 							type="button"
+							caseSensitive
 							className={({ isActive }) =>
 								cn(
-									isActive ? "ring ring-indigo-500" : "",
 									"inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
+									isActive
+										? "ring ring-indigo-500 bg-indigo-400 touch-none "
+										: "",
 								)
 							}
 						>

@@ -89,7 +89,7 @@ export default function SingUp() {
 					Sign up to your account
 				</h2>
 			</div>
-
+			{serverAction?.authError?.message}
 			<Form method="post" className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
 				<div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-6">
 					<div className="col-span-full">
