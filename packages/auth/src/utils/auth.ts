@@ -1,9 +1,9 @@
-import { Prisma, PrismaClient } from "@prisma/client/index.js";
+import { PrismaClient } from "@prisma/client/index.js";
 import { type User, betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { admin, organization } from "better-auth/plugins";
 import type { Context } from "elysia";
-import { smtp_transporter, verificationEmail } from "./smtp";
+import { smtp_transporter } from "./smtp";
 
 const prisma = new PrismaClient();
 

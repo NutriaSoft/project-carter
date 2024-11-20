@@ -16,7 +16,7 @@ import {
 	safeParse,
 	string,
 } from "valibot";
-import { auth_client } from "~/utils/auth.server";
+import { auth_client } from "~/utils/authenticator.server";
 
 const RegisterSchema = object({
 	name: pipe(
