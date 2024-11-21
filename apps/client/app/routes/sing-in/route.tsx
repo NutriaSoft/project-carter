@@ -1,5 +1,9 @@
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid";
-import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
+import type {
+	ActionFunctionArgs,
+	LoaderFunctionArgs,
+	MetaFunction,
+} from "@remix-run/node";
 import { Form, Link, json, useActionData } from "@remix-run/react";
 import { AuthorizationError } from "remix-auth";
 import { ValiError, flatten } from "valibot";
@@ -12,12 +16,24 @@ export const meta: MetaFunction = () => {
 	];
 };
 
+export async function loader({ request }: LoaderFunctionArgs) {
+	// If the user is already authenticated redirect to /dashboard directly
+	return await authenticator.isAuthenticated(request, {
+		successRedirect: "/dashboard",
+		// failureRedirect:"/sing-in"
+	});
+}
+
 export async function action(action: ActionFunctionArgs) {
 	try {
-		return await authenticator.authenticate("user-pass", action.request, {
-			successRedirect: "/dashboard",
-			throwOnError: true,
-		});
+		return await authenticator.authenticate(
+			"user-pass",
+			action.request.clone(),
+			{
+				successRedirect: "/dashboard",
+				throwOnError: true,
+			},
+		);
 	} catch (error) {
 		if (error instanceof Response) return error;
 		if (error instanceof AuthorizationError) {
@@ -26,12 +42,10 @@ export async function action(action: ActionFunctionArgs) {
 					formError: flatten(error.cause.issues).nested,
 				});
 			}
-			if (error.cause) {
-				// ! Falta manejar el tipo de error BetterFetchError
-				console.log("ERROR CAUSA", error.cause.message);
+			if (error.cause instanceof Error) {
+				console.warn("ERROR CAUSA", error.cause.message);
 				return json({
-					authError: (error.cause as Error & { error: { message: string } })
-						.error.message,
+					authError: error.cause.message,
 				});
 			}
 		}

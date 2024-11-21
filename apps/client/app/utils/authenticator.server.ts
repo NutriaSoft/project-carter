@@ -12,7 +12,9 @@ import {
 } from "valibot";
 import { sessionStorage } from "./session.server";
 
-const _authenticator = new Authenticator(sessionStorage);
+// eslint-disable-next-line prefer-const
+export const authenticator = new Authenticator(sessionStorage);
+
 
 const LoginSchema = object({
 	email: pipe(
@@ -27,26 +29,24 @@ const LoginSchema = object({
 	),
 });
 
-_authenticator.use(
+authenticator.use(
 	new FormStrategy(async ({ form }) => {
+
 		const { email, password } = parse(LoginSchema, {
 			password: String(form.get("password")),
 			email: String(form.get("email")),
 		});
-		const { data } = await auth_client.signIn.email({
+
+		const { data, error } = await auth_client.signIn.email({
 			email,
 			password,
-			fetchOptions: {
-				throw: true,
-			},
 		});
-		return data?.session;
+
+		if (error) throw new Error(error.message, { cause: error })
+
+		return data.session;
 	}),
 	// each strategy has a name and can be changed to use another one
 	// same strategy multiple times, especially useful for the OAuth2 strategy.
 	"user-pass",
 );
-
-export const authenticator = _authenticator;
-
-export { auth_client };

@@ -30,7 +30,7 @@ const navigation = [
 const userNavigation = [
 	{ name: "Your Profile", href: "#" },
 	{ name: "Settings", href: "#" },
-	{ name: "Sign out", href: "#" },
+	{ name: "Sign out", href: "/sing-out" },
 ];
 
 export function Navbar() {

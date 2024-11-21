@@ -14,7 +14,7 @@ export default function DashboardTeams() {
 
 	return (
 		<>
-			<header className="bg-white shadow">
+			<header className="bg-white dark:bg-neutral-900 shadow">
 				<div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 md:flex md:items-center md:justify-between">
 					<h1 className="text-3xl font-bold tracking-tight text-gray-900 capitalize">
 						teams
