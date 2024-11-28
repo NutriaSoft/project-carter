@@ -7,10 +7,12 @@ import {
 	MenuItem,
 	MenuItems,
 } from "@headlessui/react";
+import { MoonIcon, SunIcon } from "@heroicons/react/20/solid";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { cn } from "@package/ui/utils";
 import { NavLink } from "@remix-run/react";
 import type { NavLinkRenderProps } from "react-router-dom";
+import { Theme, useTheme } from "remix-themes";
 
 const user = {
 	name: "Tom Cook",
@@ -20,7 +22,7 @@ const user = {
 };
 
 const navigation = [
-	{ name: "Dashboard", href: "./" },
+	// { name: "Dashboard", href: "./" },
 	{ name: "team", href: "./teams" },
 	{ name: "Projects", href: "./projects" },
 	{ name: "Calendar", href: "./calendar" },
@@ -34,6 +36,8 @@ const userNavigation = [
 ];
 
 export function Navbar() {
+	const [theme, setTheme] = useTheme();
+
 	return (
 		<Disclosure as="nav" className="bg-gray-800">
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -55,9 +59,9 @@ export function Navbar() {
 										className={({ isActive }) =>
 											cn(
 												isActive
-													? "bg-gray-900 text-white active"
-													: "text-gray-300 hover:bg-gray-700 hover:text-white",
-												"rounded-md px-3 py-2 text-sm font-medium capitalize",
+													? "bg-indigo-600 dark:bg-gray-900 text-white active"
+													: "text-gray-300 hover:underline dark:hover:bg-gray-700 dark:hover:text-white",
+												"rounded-md px-3 py-2 text-sm font-medium capitalize transition-colors",
 											)
 										}
 									>
@@ -68,7 +72,24 @@ export function Navbar() {
 						</div>
 					</div>
 					<div className="hidden md:block">
-						<div className="ml-4 flex items-center md:ml-6">
+						<div className="flex items-center gap-2">
+							<button
+								type="button"
+								className="relative flex  rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+								onClick={() =>
+									setTheme(theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT)
+								}
+							>
+								<span className="sr-only">View notifications</span>
+								<span className="absolute -inset-1.5" />
+
+								<SunIcon className="  size-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+
+								<MoonIcon
+									aria-hidden="true"
+									className="absolute  size-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+								/>
+							</button>
 							<button
 								type="button"
 								className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
@@ -79,7 +100,7 @@ export function Navbar() {
 							</button>
 
 							{/* Profile dropdown */}
-							<Menu as="div" className="relative ml-3">
+							<Menu as="div" className="relative ">
 								<div>
 									<MenuButton className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
 										<span className="absolute -inset-1.5" />

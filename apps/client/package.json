@@ -13,6 +13,7 @@
 		"typecheck": "tsc"
 	},
 	"dependencies": {
+		"@faker-js/faker": "^9.2.0",
 		"@headlessui/react": "^2.1.10",
 		"@heroicons/react": "^2.1.5",
 		"@remix-run/node": "^2.12.1",
@@ -23,6 +24,7 @@
 		"react-dom": "^18.2.0",
 		"remix-auth": "^3.7.0",
 		"remix-auth-form": "^1.5.0",
+		"remix-themes": "^1.5.1",
 		"valibot": "^0.42.1",
 		"wretch": "^2.10.0"
 	},

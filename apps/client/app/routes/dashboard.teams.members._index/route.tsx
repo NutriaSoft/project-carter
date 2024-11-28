@@ -1,4 +1,5 @@
 import { EnvelopeIcon, PhoneIcon } from "@heroicons/react/20/solid";
+import { authClient } from "@package/auth";
 
 const people = [
 	{
@@ -192,6 +193,18 @@ const people = [
 	},
 	// More people...
 ];
+
+export async function loader() {
+	const users = await authClient.admin.listUsers({
+		query: {
+			limit: 10,
+		},
+	});
+
+	console.log(users);
+
+	return null;
+}
 
 export default function Index() {
 	return (

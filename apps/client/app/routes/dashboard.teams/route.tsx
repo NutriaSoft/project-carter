@@ -1,7 +1,7 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { BarsArrowUpIcon, UsersIcon } from "@heroicons/react/24/outline";
 import { cn } from "@package/ui/utils";
-import { NavLink, Outlet, useLocation } from "@remix-run/react";
+import { NavLink, Outlet } from "@remix-run/react";
 import SectionNav from "./section-head";
 
 /*
@@ -10,14 +10,15 @@ import SectionNav from "./section-head";
 **/
 
 export default function DashboardTeams() {
-	const location = useLocation();
+	const titlePage: string = "teams";
+	// const location = useLocation();
 
 	return (
 		<>
-			<header className="bg-white dark:bg-neutral-900 shadow">
+			<header className="bg-white dark:bg-neutral-950 ">
 				<div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 md:flex md:items-center md:justify-between">
-					<h1 className="text-3xl font-bold tracking-tight text-gray-900 capitalize">
-						teams
+					<h1 className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-200 capitalize">
+						{titlePage}
 					</h1>
 					<div className="flex gap-3 md:">
 						<div className="flex rounded-md shadow-sm w-full">
@@ -81,10 +82,7 @@ export default function DashboardTeams() {
 
 						<NavLink
 							end
-							to={`${location.pathname}/create`.replace(
-								/\/create\/create/,
-								"/create",
-							)}
+							to={"create"}
 							relative="route"
 							type="button"
 							caseSensitive
@@ -102,7 +100,7 @@ export default function DashboardTeams() {
 					</div>
 				</div>
 			</header>
-			<main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-6">
+			<main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-6 shadow-inner">
 				<SectionNav />
 				<Outlet />
 			</main>

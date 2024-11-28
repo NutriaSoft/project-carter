@@ -1,4 +1,4 @@
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import {
 	Links,
 	Meta,
@@ -9,12 +9,23 @@ import {
 	isRouteErrorResponse,
 	useNavigate,
 	useRouteError,
+	useRouteLoaderData,
 } from "@remix-run/react";
 
-import "./tailwind.css";
+import {
+	PreventFlashOnWrongTheme,
+	type Theme,
+	ThemeProvider,
+	useTheme,
+} from "remix-themes";
+
+import styles from "./tailwind.css?url";
+
 import type { ReactNode } from "react";
+import { themeSessionResolver } from "./utils/theme.server";
 
 export const links: LinksFunction = () => [
+	{ rel: "stylesheet", href: styles },
 	{ rel: "preconnect", href: "https://fonts.googleapis.com" },
 	{
 		rel: "preconnect",
@@ -27,25 +38,73 @@ export const links: LinksFunction = () => [
 	},
 ];
 
+export default function App() {
+	return <Outlet />;
+}
+
+export function ErrorBoundary() {
+	return <DefaultErrorBoundary />;
+}
+
+export function HydrateFallback() {
+	return <h1>Loading...</h1>;
+}
+
+// Wrap your app with ThemeProvider.
+// `specifiedTheme` is the stored theme in the session storage.
+// `themeAction` is the action name that's used to change the theme in the session storage.
 export function Layout({ children }: { children: ReactNode }) {
+	const data = useRouteLoaderData<typeof loader>("root");
+
 	return (
-		<html lang="en" className="h-full dark">
+		<ThemeProvider
+			specifiedTheme={data?.theme as Theme}
+			themeAction="/action/set-theme"
+		>
+			<InnerLayout ssrTheme={Boolean(data?.theme)}>{children}</InnerLayout>
+		</ThemeProvider>
+	);
+}
+
+// Return the theme from the session storage using the loader
+export async function loader({ request }: LoaderFunctionArgs) {
+	const { getTheme } = await themeSessionResolver(request);
+	return {
+		theme: getTheme(),
+	};
+}
+
+function InnerLayout({
+	ssrTheme,
+	children,
+}: {
+	ssrTheme: boolean;
+	children: ReactNode;
+}) {
+	const [theme] = useTheme();
+
+	return (
+		<html lang="en" className={theme ?? ""}>
 			<head>
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<Meta />
 				<Links />
 			</head>
-			<body className="h-full">
+			<body
+				className="bg-white text-black dark:bg-black dark:text-white"
+				suppressHydrationWarning
+			>
 				{children}
 				<ScrollRestoration />
+				<PreventFlashOnWrongTheme ssrTheme={ssrTheme} />
 				<Scripts />
 			</body>
 		</html>
 	);
 }
 
-export function ErrorBoundary() {
+export function DefaultErrorBoundary() {
 	const error = useRouteError();
 
 	const navigate = useNavigate();
@@ -94,8 +153,4 @@ export function ErrorBoundary() {
 	if (!(error instanceof Error)) {
 		return <h1>Unknown Error</h1>;
 	}
-}
-
-export default function App() {
-	return <Outlet />;
 }

@@ -3,6 +3,7 @@ import {
 	ExclamationCircleIcon,
 	UsersIcon,
 } from "@heroicons/react/20/solid";
+import { authClient } from "@package/auth";
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { Form, json, redirect, useActionData } from "@remix-run/react";
 import {
@@ -16,8 +17,6 @@ import {
 	safeParse,
 	string,
 } from "valibot";
-import { auth_client } from "~/utils/authenticator.server";
-
 const RegisterSchema = object({
 	name: pipe(
 		string("Your name must be a string."),
@@ -44,7 +43,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 	const errors: {
 		formError?: FlatErrors<typeof RegisterSchema>["nested"];
-		authError?: Awaited<ReturnType<typeof auth_client.signUp.email>>["error"];
+		authError?: Awaited<ReturnType<typeof authClient.signUp.email>>["error"];
 	} = {};
 
 	const form = safeParse(
@@ -59,7 +58,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		return json(errors);
 	}
 
-	const { error } = await auth_client.signUp.email({
+	const { error } = await authClient.signUp.email({
 		email,
 		password,
 		name,
