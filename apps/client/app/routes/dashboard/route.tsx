@@ -1,9 +1,16 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { type MetaFunction, Outlet } from "@remix-run/react";
+import {
+	type MetaFunction,
+	Outlet,
+	// useLoaderData,
+} from "@remix-run/react";
 import { authenticator } from "~/utils/authenticator.server";
 import { Navbar } from "./navbar";
 
 export default function DashboardLayout() {
+	// const data = useLoaderData();
+	// console.log(data);
+
 	return (
 		<>
 			<Navbar />

@@ -12,8 +12,9 @@ import {
 } from "valibot";
 import { sessionStorage } from "./session.server";
 
-// eslint-disable-next-line prefer-const
-export const authenticator = new Authenticator(sessionStorage);
+export const authenticator = new Authenticator<
+	typeof authClient.$Infer.Session
+>(sessionStorage);
 
 const LoginSchema = object({
 	email: pipe(
@@ -40,9 +41,12 @@ authenticator.use(
 			password,
 		});
 
+		const session = await authClient.getSession();
+		console.log({ session });
+
 		if (error) throw new Error(error.message, { cause: error });
 
-		return data.session;
+		return data;
 	}),
 	// each strategy has a name and can be changed to use another one
 	// same strategy multiple times, especially useful for the OAuth2 strategy.

@@ -15,13 +15,14 @@ model User {
   image         String?
   createdAt     DateTime
   updatedAt     DateTime
-  age           Int?
-  banExpires    Int?
-  banReason     String?
-  banned        Boolean?
   role          String?
+  banned        Boolean?
+  banReason     String?
+  banExpires    DateTime?
+  age           Int?
   Account       Account[]
   Invitation    Invitation[]
+  Member        Member[]
   Session       Session[]
 
   @@map("user")
@@ -30,6 +31,9 @@ model User {
 model Session {
   id                   String   @id
   expiresAt            DateTime
+  token                String   @unique
+  createdAt            DateTime
+  updatedAt            DateTime
   ipAddress            String?
   userAgent            String?
   userId               String
@@ -41,25 +45,31 @@ model Session {
 }
 
 model Account {
-  id           String    @id
-  accountId    String
-  providerId   String
-  userId       String
-  accessToken  String?
-  refreshToken String?
-  idToken      String?
-  expiresAt    DateTime?
-  password     String?
-  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("account")
 }
 
 model Verification {
-  id         String   @id
+  id         String    @id
   identifier String
   value      String
   expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
 
   @@map("verification")
 }
@@ -81,9 +91,9 @@ model Member {
   id             String       @id
   organizationId String
   userId         String
-  email          String
   role           String
   createdAt      DateTime
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@map("member")

@@ -1,25 +1,19 @@
-import { PrismaClient } from "@prisma/client/index.js";
+import { PrismaClient } from "@prisma/client";
 import { type User, betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { admin, organization } from "better-auth/plugins";
+import { admin, openAPI, organization } from "better-auth/plugins";
 import type { Context } from "elysia";
 import { smtp_transporter } from "./smtp";
 
 const prisma = new PrismaClient();
 
 export const auth = betterAuth({
-	plugins: [
-		admin(),
-		organization({
-			async allowUserToCreateOrganization(user) {
-				const findUser = await prisma.user.findFirst({
-					where: { ...user },
-				});
-
-				return findUser?.role === "admin";
-			},
-		}),
-	],
+	baseURL: "http://localhost:8888",
+	trustedOrigins: ["http://localhost:5173"],
+	database: prismaAdapter(prisma, {
+		provider: "sqlite",
+	}),
+	plugins: [admin(), organization(), openAPI()],
 	user: {
 		additionalFields: {
 			age: {
@@ -28,23 +22,13 @@ export const auth = betterAuth({
 			},
 		},
 	},
-	database: prismaAdapter(prisma, {
-		provider: "sqlite",
-	}),
 	logger: {
-		disabled: false,
-		verboseLogging: true,
-	},
-	advanced: {
-		disableCSRFCheck: true,
-		crossSubDomainCookies: {
-			enabled: true,
-			// domain: "example.com" // Optional. Defaults to the base url domain
-		},
+		disabled: true,
 	},
 	emailVerification: {
+		sendEmailVerificationOnSignUp: true,
 		sendOnSignUp: true,
-		async sendVerificationEmail(user: User, url: string, token: string) {
+		async sendVerificationEmail({ user, url, token }, request) {
 			const { messageId } = await smtp_transporter.sendMail({
 				from: '"Project Carter" <project_carter@ethereal.email>',
 				to: "bar@example.com",
@@ -58,7 +42,6 @@ export const auth = betterAuth({
 
 			console.log("Message sent: %s", messageId); // Message sent: <d786aa62-4e0a-070a-47ed-0b0666549519@ethereal.email>
 		},
-		sendEmailVerificationOnSignUp: true,
 	},
 	emailAndPassword: {
 		enabled: true,

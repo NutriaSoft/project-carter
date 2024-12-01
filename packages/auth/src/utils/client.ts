@@ -4,6 +4,6 @@ import { createAuthClient } from "better-auth/react"; // make sure to import fro
 export const authClient = createAuthClient({
 	//you can pass client configuration here
 	// the base url of your auth server
-
+	baseURL: "http://localhost:8888",
 	plugins: [adminClient(), organizationClient()],
 });

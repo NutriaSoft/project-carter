@@ -1,22 +1,24 @@
 import {
 	EnvelopeIcon,
 	ExclamationCircleIcon,
+	ExclamationTriangleIcon,
 	UsersIcon,
 } from "@heroicons/react/20/solid";
 import { authClient } from "@package/auth";
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { Form, json, redirect, useActionData } from "@remix-run/react";
 import {
-	type FlatErrors,
+	ValiError,
 	email,
 	flatten,
 	minLength,
 	nonEmpty,
 	object,
+	parse,
 	pipe,
-	safeParse,
 	string,
 } from "valibot";
+
 const RegisterSchema = object({
 	name: pipe(
 		string("Your name must be a string."),
@@ -34,43 +36,46 @@ const RegisterSchema = object({
 	),
 });
 
-export async function action({ request }: ActionFunctionArgs) {
-	const formData = await request.formData();
+export async function action({
+	request,
+}: ActionFunctionArgs): Promise<Response | undefined> {
+	try {
+		const formData = await request.formData();
 
-	const password = String(formData.get("password"));
-	const email = String(formData.get("email"));
-	const name = String(formData.get("name"));
+		const formParse = parse(RegisterSchema, {
+			password: String(formData.get("password")),
+			email: String(formData.get("email")),
+			name: String(formData.get("name")),
+		});
 
-	const errors: {
-		formError?: FlatErrors<typeof RegisterSchema>["nested"];
-		authError?: Awaited<ReturnType<typeof authClient.signUp.email>>["error"];
-	} = {};
+		const origin = request.headers.get("origin");
+		const callbackURL = `${origin}/sing-in/`;
+		const { error } = await authClient.signUp.email({
+			email: formParse.email,
+			password: formParse.password,
+			name: formParse.name,
+			callbackURL,
+		});
 
-	const form = safeParse(
-		RegisterSchema,
-		{ email, password, name },
-		{ abortEarly: true },
-	);
+		// console.log(error);
+		if (error) throw new Error(error.message, { cause: error });
 
-	if (!form.success) {
-		console.error("err", flatten<typeof RegisterSchema>(form.issues).nested);
-		errors.formError = flatten<typeof RegisterSchema>(form.issues).nested;
-		return json(errors);
+		return redirect("./success");
+	} catch (error) {
+		if (error instanceof Response) return error;
+
+		if (error instanceof Error) {
+			console.warn("ERROR CAUSA", error.cause);
+			return json({
+				authError: error.message,
+			});
+		}
+		if (error instanceof ValiError) {
+			return json({
+				formError: flatten(error.issues).nested,
+			});
+		}
 	}
-
-	const { error } = await authClient.signUp.email({
-		email,
-		password,
-		name,
-		callbackURL: `${request.headers.get("origin")}/sing-in`,
-	});
-
-	if (error) {
-		errors.authError = error;
-		return json(errors);
-	}
-	// console.log("succes", form, { data, error });
-	if (!error) return redirect("./success");
 }
 
 export default function SingUp() {
@@ -84,17 +89,34 @@ export default function SingUp() {
 					src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
 					className="mx-auto h-10 w-auto"
 				/>
-				<h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+				<h2 className="dark:text-gray-200 mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
 					Sign up to your account
 				</h2>
 			</div>
 			{serverAction?.authError?.message}
 			<Form method="post" className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
+				{serverAction?.authError ? (
+					<div className="rounded-md bg-yellow-50 p-4">
+						<div className="flex">
+							<div className="shrink-0">
+								<ExclamationTriangleIcon
+									aria-hidden="true"
+									className="size-5 text-yellow-400"
+								/>
+							</div>
+							<div className="ml-3">
+								<h3 className="text-sm font-medium text-yellow-800">
+									{serverAction?.authError}
+								</h3>
+							</div>
+						</div>
+					</div>
+				) : null}
 				<div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-6">
 					<div className="col-span-full">
 						<label
 							htmlFor="email"
-							className="block text-sm font-medium leading-6 text-gray-900 capitalize"
+							className=" dark:text-gray-200 odd:block text-sm font-medium leading-6 text-gray-900 capitalize"
 						>
 							name
 						</label>
@@ -134,7 +156,7 @@ export default function SingUp() {
 					<div className="col-span-full">
 						<label
 							htmlFor="email"
-							className="block text-sm font-medium leading-6 text-gray-900"
+							className="dark:text-gray-200 block text-sm font-medium leading-6 text-gray-900"
 						>
 							Email
 						</label>
@@ -174,7 +196,7 @@ export default function SingUp() {
 					<div className="col-span-full">
 						<label
 							htmlFor="email"
-							className="block text-sm font-medium leading-6 text-gray-900 capitalize"
+							className="dark:text-gray-200 block text-sm font-medium leading-6 text-gray-900 capitalize"
 						>
 							password
 						</label>

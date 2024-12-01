@@ -1,39 +1,19 @@
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid";
-import type {
-	ActionFunctionArgs,
-	LoaderFunctionArgs,
-	MetaFunction,
-} from "@remix-run/node";
+import type { ActionFunctionArgs } from "@remix-run/node";
 import { Form, Link, json, useActionData } from "@remix-run/react";
 import { AuthorizationError } from "remix-auth";
 import { ValiError, flatten } from "valibot";
 import { authenticator } from "~/utils/authenticator.server";
 
-export const meta: MetaFunction = () => {
-	return [
-		{ title: "Sing in Remix App" },
-		{ name: "description", content: "Welcome to Remix!" },
-	];
-};
-
-export async function loader({ request }: LoaderFunctionArgs) {
-	// If the user is already authenticated redirect to /dashboard directly
-	return await authenticator.isAuthenticated(request, {
-		successRedirect: "/dashboard",
-	});
-}
-
 export async function action(action: ActionFunctionArgs) {
 	try {
-		return await authenticator.authenticate(
-			"user-pass",
-			action.request.clone(),
-			{
-				successRedirect: "/dashboard",
-				throwOnError: true,
-			},
-		);
+		return await authenticator.authenticate("user-pass", action.request, {
+			successRedirect: "/dashboard",
+			throwOnError: true,
+			context: action.context,
+		});
 	} catch (error) {
+		console.error(error);
 		if (error instanceof Response) return error;
 		if (error instanceof AuthorizationError) {
 			if (error.cause instanceof ValiError) {
@@ -51,7 +31,18 @@ export async function action(action: ActionFunctionArgs) {
 	}
 }
 
-export default function Route() {
+// Finally, we need to export a loader function to check if the user is already
+// authenticated and redirect them to the dashboard
+// export async function loader({ request }: LoaderFunctionArgs) {
+// const session = await sessionStorage.getSession(
+// 	request.headers.get("cookie"),
+// );
+// const user = session.get("user");
+// if (user) throw redirect("/dashboard");
+// return data(null);
+// }
+
+export default function IndexSingIn() {
 	const serverAction = useActionData<typeof action>();
 
 	return (
@@ -63,7 +54,7 @@ export default function Route() {
 					className="mx-auto h-10 w-auto"
 				/>
 				<h2 className="mt-10 dark:text-gray-200 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-					Sign in to your account
+					Sign in to your account {JSON.stringify(serverAction)}
 				</h2>
 			</div>
 
