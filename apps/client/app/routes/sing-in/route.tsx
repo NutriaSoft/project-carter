@@ -1,34 +1,62 @@
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid";
+import { authClient } from "@package/auth";
 import type { ActionFunctionArgs } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { Form, Link, json, useActionData } from "@remix-run/react";
-import { AuthorizationError } from "remix-auth";
 import { ValiError, flatten } from "valibot";
-import { authenticator } from "~/utils/authenticator.server";
+import {
+	email,
+	minLength,
+	nonEmpty,
+	object,
+	parse,
+	pipe,
+	string,
+} from "valibot";
 
-export async function action(action: ActionFunctionArgs) {
-	try {
-		return await authenticator.authenticate("user-pass", action.request, {
-			successRedirect: "/dashboard",
-			throwOnError: true,
-			context: action.context,
-		});
-	} catch (error) {
-		console.error(error);
-		if (error instanceof Response) return error;
-		if (error instanceof AuthorizationError) {
-			if (error.cause instanceof ValiError) {
-				return json({
-					formError: flatten(error.cause.issues).nested,
-				});
-			}
-			if (error.cause instanceof Error) {
-				console.warn("ERROR CAUSA", error.cause.message);
-				return json({
-					authError: error.cause.message,
-				});
-			}
-		}
+const LoginSchema = object({
+	email: pipe(
+		string("Your email must be a string."),
+		nonEmpty("Please enter your email."),
+		email("The email address is badly formatted."),
+	),
+	password: pipe(
+		string("Your password must be a string."),
+		nonEmpty("Please enter your password."),
+		minLength(8, "Your password must have 8 characters or more."),
+	),
+});
+
+export async function action({ request }: ActionFunctionArgs) {
+	const body = await request.formData();
+	const emailForm = body.get("email");
+	const passwordForm = body.get("password");
+
+	const { email, password } = parse(LoginSchema, {
+		email: emailForm,
+		password: passwordForm,
+	});
+
+	let response: Response | undefined;
+
+	const { error } = await authClient.signIn.email({
+		email,
+		password,
+		fetchOptions: {
+			onSuccess(context) {
+				response = context.response;
+			},
+		},
+	});
+	if (error) {
+		return null;
 	}
+
+	return redirect("/dashboard", {
+		headers: {
+			"Set-Cookie": response?.headers.get("set-cookie") ?? "",
+		},
+	});
 }
 
 // Finally, we need to export a loader function to check if the user is already
