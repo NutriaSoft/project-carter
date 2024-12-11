@@ -1,5 +1,5 @@
 // import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
-import { client } from "@package/auth";
+import { authClient } from "@package/auth";
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { Form, json, redirect } from "@remix-run/react";
 import { flatten, nonEmpty, object, pipe, safeParse, string } from "valibot";
@@ -26,7 +26,7 @@ export async function action({ request: { formData } }: ActionFunctionArgs) {
 		return json({ formError });
 	}
 
-	const { data, error } = await client.organization.create({
+	const { data, error } = await authClient.organization.create({
 		name: name,
 		slug: `isc-${name}`,
 		// logo: "https://example.com/logo.png",

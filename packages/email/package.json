@@ -1,0 +1,20 @@
+{
+	"name": "email",
+	"module": "index.ts",
+	"type": "module",
+	"scripts": {
+		"dev": "email dev --dir ./templates --port 7777"
+	},
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	},
+	"dependencies": {
+		"@react-email/components": "^0.0.31",
+		"react": "19.0.0",
+		"react-dom": "19.0.0",
+		"react-email": "3.0.4"
+	}
+}

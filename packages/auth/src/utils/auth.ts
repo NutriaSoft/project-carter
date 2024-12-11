@@ -10,10 +10,10 @@ const prisma = new PrismaClient();
 export const auth = betterAuth({
 	baseURL: "http://localhost:8888",
 	trustedOrigins: ["http://localhost:5173"],
+	plugins: [admin(), organization(), openAPI()],
 	database: prismaAdapter(prisma, {
 		provider: "sqlite",
 	}),
-	plugins: [admin(), organization(), openAPI()],
 	user: {
 		additionalFields: {
 			age: {

@@ -49,7 +49,9 @@ export async function action({
 		});
 
 		const origin = request.headers.get("origin");
-		const callbackURL = `${origin}/sing-in/`;
+		const callbackURL = `${origin}/sing-in`;
+		console.log(callbackURL);
+
 		const { error } = await authClient.signUp.email({
 			email: formParse.email,
 			password: formParse.password,
@@ -57,7 +59,6 @@ export async function action({
 			callbackURL,
 		});
 
-		// console.log(error);
 		if (error) throw new Error(error.message, { cause: error });
 
 		return redirect("./success");

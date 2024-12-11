@@ -1,46 +1,87 @@
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid";
-import type { ActionFunctionArgs } from "@remix-run/node";
-import { Form, Link, json, useActionData } from "@remix-run/react";
-import { AuthorizationError } from "remix-auth";
-import { ValiError, flatten } from "valibot";
-import { authenticator } from "~/utils/authenticator.server";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
+import { Form, Link, json, redirect, useActionData } from "@remix-run/react";
+import {
+	ValiError,
+	email,
+	flatten,
+	minLength,
+	nonEmpty,
+	object,
+	parse,
+	pipe,
+	string,
+} from "valibot";
+import { WretchError } from "wretch/resolver";
+import { authServer } from "~/utils/auh-server.server";
 
-export async function action(action: ActionFunctionArgs) {
+const LoginSchema = object({
+	email: pipe(
+		string("Your email must be a string."),
+		nonEmpty("Please enter your email."),
+		email("The email address is badly formatted."),
+	),
+	password: pipe(
+		string("Your password must be a string."),
+		nonEmpty("Please enter your password."),
+		minLength(8, "Your password must have 8 characters or more."),
+	),
+});
+
+export async function action({ request }: ActionFunctionArgs) {
 	try {
-		return await authenticator.authenticate("user-pass", action.request, {
-			successRedirect: "/dashboard",
-			throwOnError: true,
-			context: action.context,
+		const requestClone = request.clone();
+		const formData = await requestClone.formData();
+
+		const { email, password } = parse(LoginSchema, {
+			password: String(formData.get("password")),
+			email: String(formData.get("email")),
 		});
-	} catch (error) {
-		console.error(error);
-		if (error instanceof Response) return error;
-		if (error instanceof AuthorizationError) {
-			if (error.cause instanceof ValiError) {
-				return json({
-					formError: flatten(error.cause.issues).nested,
-				});
-			}
-			if (error.cause instanceof Error) {
-				console.warn("ERROR CAUSA", error.cause.message);
-				return json({
-					authError: error.cause.message,
-				});
-			}
+
+		const authRequest = await authServer
+			.headers({ ...requestClone.headers })
+			.url("/sign-in/email")
+			.post({ email, password })
+			.res();
+
+		const mergedHeaders = new Headers([
+			...requestClone.headers.entries(),
+			...authRequest.headers.entries(),
+		]);
+
+		mergedHeaders.delete("content-length");
+
+		return redirect("/dashboard", { headers: mergedHeaders });
+	} catch (exception) {
+		if (exception instanceof Response) return exception;
+		if (exception instanceof WretchError) {
+			return json({ authError: exception.message });
+		}
+		if (exception instanceof ValiError) {
+			return json({ formError: flatten(exception.issues).nested });
 		}
 	}
 }
 
-// Finally, we need to export a loader function to check if the user is already
-// authenticated and redirect them to the dashboard
-// export async function loader({ request }: LoaderFunctionArgs) {
-// const session = await sessionStorage.getSession(
-// 	request.headers.get("cookie"),
-// );
-// const user = session.get("user");
-// if (user) throw redirect("/dashboard");
-// return data(null);
-// }
+export async function loader({ request }: LoaderFunctionArgs) {
+	const requestClone = request.clone();
+
+	const authRequest = await authServer
+		.headers({ ...requestClone.headers })
+		.get("/get-session")
+		.res();
+
+	const mergedHeaders = new Headers([
+		...requestClone.headers.entries(),
+		...authRequest.headers.entries(),
+	]);
+
+	if (!mergedHeaders.get("cookie")?.includes("better-auth")) return null;
+
+	return redirect("/dashboard", {
+		headers: mergedHeaders,
+	});
+}
 
 export default function IndexSingIn() {
 	const serverAction = useActionData<typeof action>();
@@ -145,12 +186,14 @@ export default function IndexSingIn() {
 						</button>
 					</div>
 				</Form>
-
-				<p className="mt-10 text-center text-sm text-gray-500">
+				<p className=" text-center text-sm text-gray-500">
 					Not a member?{" "}
-					<span className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
-						Start a 14 day free trial
-					</span>
+					<Link
+						to="/sing-up"
+						className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+					>
+						Register now
+					</Link>
 				</p>
 			</div>
 		</div>

@@ -1,34 +1,34 @@
 import { EnvelopeIcon, PhoneIcon } from "@heroicons/react/20/solid";
-import { authClient } from "@package/auth";
+import type { authClient } from "@package/auth";
+import type { LoaderFunctionArgs } from "@remix-run/node";
+import { json, useLoaderData } from "@remix-run/react";
+import { authServer } from "~/utils/auh-server.server";
 
-const people = [
-	{
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		department: "Optimization",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-	},
-];
+export async function loader({ request }: LoaderFunctionArgs) {
+	try {
+		const requestClone = request.clone();
 
-export async function loader() {
-	const session = await authClient.getSession();
-	const users = await authClient.admin.listUsers({
-		query: {
-			limit: 10,
-		},
-	});
+		const result: Awaited<
+			ReturnType<typeof authClient.admin.listUsers<never>>
+		> = await authServer
+			.headers(requestClone.headers)
+			.get("/admin/list-users")
+			.json();
 
-	console.log({ users, session });
-	return null;
+		console.log(result);
+		return json(result);
+	} catch (error) {
+		console.log(error);
+		return null;
+	}
 }
 
 export default function Index() {
+	const loaderData = useLoaderData<typeof loader>();
+
 	return (
 		<ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-			{people.map((person) => (
+			{loaderData?.users.map((person) => (
 				<li
 					key={person.email}
 					className="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow"
@@ -36,7 +36,7 @@ export default function Index() {
 					<div className="flex flex-1 flex-col p-8">
 						<img
 							alt=""
-							src={person.image}
+							src={person.image ? person.image : ""}
 							className="mx-auto h-32 w-32 flex-shrink-0 rounded-full"
 						/>
 						<h3 className="mt-6 text-sm font-medium text-gray-900">
@@ -44,7 +44,7 @@ export default function Index() {
 						</h3>
 						<dl className="mt-1 flex flex-grow flex-col justify-between">
 							<dt className="sr-only">Title</dt>
-							<dd className="text-sm text-gray-500">{person.title}</dd>
+							<dd className="text-sm text-gray-500">{person.role}</dd>
 							<dt className="sr-only">Role</dt>
 							<dd className="mt-3 space-x-2">
 								<span className="inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 text-xs font-medium text-gray-900 ring-1 ring-inset ring-gray-200 capitalize">

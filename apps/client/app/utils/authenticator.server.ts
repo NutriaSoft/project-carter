@@ -1,54 +1,51 @@
-import { authClient } from "@package/auth";
-import { Authenticator } from "remix-auth";
-import { FormStrategy } from "remix-auth-form";
-import {
-	email,
-	minLength,
-	nonEmpty,
-	object,
-	parse,
-	pipe,
-	string,
-} from "valibot";
-import { sessionStorage } from "./session.server";
+// import { authClient } from "@package/auth";
+// import { Authenticator } from "remix-auth";
+// import { FormStrategy } from "remix-auth-form";
+// import {
+// 	email,
+// 	minLength,
+// 	nonEmpty,
+// 	object,
+// 	parse,
+// 	pipe,
+// 	string,
+// } from "valibot";
+// import { sessionStorage } from "./session.server";
 
-export const authenticator = new Authenticator<
-	typeof authClient.$Infer.Session
->(sessionStorage);
+// export const authenticator = new Authenticator<
+// 	typeof authClient.$Infer.Session
+// >(sessionStorage);
 
-const LoginSchema = object({
-	email: pipe(
-		string("Your email must be a string."),
-		nonEmpty("Please enter your email."),
-		email("The email address is badly formatted."),
-	),
-	password: pipe(
-		string("Your password must be a string."),
-		nonEmpty("Please enter your password."),
-		minLength(8, "Your password must have 8 characters or more."),
-	),
-});
+// const LoginSchema = object({
+// 	email: pipe(
+// 		string("Your email must be a string."),
+// 		nonEmpty("Please enter your email."),
+// 		email("The email address is badly formatted."),
+// 	),
+// 	password: pipe(
+// 		string("Your password must be a string."),
+// 		nonEmpty("Please enter your password."),
+// 		minLength(8, "Your password must have 8 characters or more."),
+// 	),
+// });
 
-authenticator.use(
-	new FormStrategy(async ({ form }) => {
-		const { email, password } = parse(LoginSchema, {
-			password: String(form.get("password")),
-			email: String(form.get("email")),
-		});
+// authenticator.use(
+// 	new FormStrategy(async ({ form }) => {
+// 		const { email, password } = parse(LoginSchema, {
+// 			password: String(form.get("password")),
+// 			email: String(form.get("email")),
+// 		});
 
-		const { data, error } = await authClient.signIn.email({
-			email,
-			password,
-		});
+// 		const { data, error } = await authClient.signIn.email({
+// 			email,
+// 			password,
+// 		});
 
-		const session = await authClient.getSession();
-		console.log({ session });
+// 		if (error) throw new Error(error.message, { cause: error });
 
-		if (error) throw new Error(error.message, { cause: error });
-
-		return data;
-	}),
-	// each strategy has a name and can be changed to use another one
-	// same strategy multiple times, especially useful for the OAuth2 strategy.
-	"user-pass",
-);
+// 		return data;
+// 	}),
+// 	// each strategy has a name and can be changed to use another one
+// 	// same strategy multiple times, especially useful for the OAuth2 strategy.
+// 	"user-pass",
+// );
