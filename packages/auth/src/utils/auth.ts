@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 
 export const auth = betterAuth({
 	baseURL: "http://localhost:8888",
-	trustedOrigins: ["http://localhost:5173"],
+	trustedOrigins: ["http://localhost:5173", "http://127.0.0.1:5173"],
 	plugins: [admin(), organization(), openAPI()],
 	database: prismaAdapter(prisma, {
 		provider: "sqlite",
@@ -48,25 +48,3 @@ export const auth = betterAuth({
 		requireEmailVerification: true,
 	},
 });
-
-// validate request method
-export const AuthHandler = ({ request, error }: Context) =>
-	["POST", "GET"].includes(request.method) ? auth.handler(request) : error(405);
-
-// user middleware (compute user and session and pass to routes)
-export const AuthMiddleware = async (request: Request) => {
-	const session = await auth.api.getSession({ headers: request.headers });
-	if (!session) return { user: null, session: null };
-	return { user: session.user, session: session.session };
-};
-
-// user info view
-export const AuthUserInfo = (
-	user: typeof auth.$Infer.Session.user | null,
-	session: typeof auth.$Infer.Session.session | null,
-) => {
-	return {
-		user: user,
-		session: session,
-	};
-};

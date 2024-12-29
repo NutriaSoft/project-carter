@@ -1,8 +1,7 @@
 // import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import { faker } from "@faker-js/faker";
 import { EnvelopeIcon, UsersIcon } from "@heroicons/react/20/solid";
-import { authClient } from "@package/auth";
-import { type ActionFunctionArgs, json } from "@remix-run/node";
+import type { ActionFunctionArgs } from "@remix-run/node";
 import { Form } from "@remix-run/react";
 import {
 	ValiError,
@@ -15,6 +14,7 @@ import {
 	pipe,
 	string,
 } from "valibot";
+import { authServer } from "~/utils/auh-server.server";
 
 const RegisterSchema = object({
 	role: pipe(
@@ -39,7 +39,9 @@ const RegisterSchema = object({
 
 export async function action({ request }: ActionFunctionArgs) {
 	try {
-		const formData = await request.clone().formData();
+		const requestClone = request.clone();
+		const formData = await requestClone.formData();
+		const headers = requestClone.headers;
 
 		const passwordField = String(formData.get("password"));
 		const emailField = String(formData.get("email"));
@@ -53,22 +55,31 @@ export async function action({ request }: ActionFunctionArgs) {
 			role: roleField,
 		});
 
-		const newUser = await authClient.admin.createUser({
-			name: formValidate.name,
-			email: formValidate.email,
-			password: formValidate.password,
-			role: formValidate.role,
-		});
+		headers.delete("content-length");
+		const authRequest = await authServer
+			.url("/admin/create-user")
+			.post(formValidate);
 
-		console.log("NEW USER", newUser);
+		// console.log({ formValidate, headers });
+		// const newUser = await authClient.admin.createUser({
+		// 	name: formValidate.name,
+		// 	email: formValidate.email,
+		// 	password: formValidate.password,
+		// 	role: formValidate.role,
+		// });
+
+		console.log("NEW USER", authRequest);
 
 		return null;
 	} catch (error) {
+		console.log(error.response);
+
 		if (error instanceof ValiError) {
-			return json({
+			return {
 				formError: flatten(error.issues).nested,
-			});
+			};
 		}
+		return error;
 	}
 }
 
@@ -78,13 +89,15 @@ export default function Index() {
 	const lastName = faker.person.lastName();
 	const email = faker.internet.email({ firstName, lastName });
 
+	// const serverAction = useActionData<typeof action>();
+
 	return (
 		<Form method="post" className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
 			<div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-6">
 				<div className="col-span-full">
 					<label
 						htmlFor="role"
-						className="block text-sm/6 font-medium text-gray-900 capitalize"
+						className="block text-sm/6 font-medium text-gray-900 dark:text-gray-200 capitalize"
 					>
 						role
 					</label>
@@ -102,7 +115,7 @@ export default function Index() {
 				<div className="col-span-full">
 					<label
 						htmlFor="name"
-						className="block text-sm font-medium leading-6 text-gray-900 capitalize"
+						className="block text-sm dark:text-gray-200 font-medium leading-6 text-gray-900 capitalize"
 					>
 						name
 					</label>
@@ -139,7 +152,7 @@ export default function Index() {
 				<div className="col-span-full">
 					<label
 						htmlFor="email"
-						className="block text-sm font-medium leading-6 text-gray-900"
+						className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200"
 					>
 						Email
 					</label>
@@ -179,7 +192,7 @@ export default function Index() {
 				<div className="col-span-full">
 					<label
 						htmlFor="email"
-						className="block text-sm font-medium leading-6 text-gray-900 capitalize"
+						className="block text-sm font-medium leading-6 dark:text-gray-200 text-gray-900 capitalize"
 					>
 						password
 					</label>

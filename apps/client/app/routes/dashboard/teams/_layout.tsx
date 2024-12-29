@@ -1,7 +1,8 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { BarsArrowUpIcon, UsersIcon } from "@heroicons/react/24/outline";
 import { cn } from "@package/ui/utils";
-import { NavLink, Outlet } from "@remix-run/react";
+import { NavLink, Outlet, useLocation } from "@remix-run/react";
+import { useMemo } from "react";
 import SectionNav from "./section-head";
 
 /*
@@ -11,7 +12,11 @@ import SectionNav from "./section-head";
 
 export default function DashboardTeams() {
 	const titlePage: string = "teams";
-	// const location = useLocation();
+	const { pathname } = useLocation();
+	const routeCreate = useMemo(
+		() => (pathname.includes("create") ? pathname : `${pathname}/create`),
+		[pathname],
+	);
 
 	return (
 		<>
@@ -38,18 +43,13 @@ export default function DashboardTeams() {
 								/>
 							</div>
 
-							<Menu as="div" className="relative">
-								<MenuButton>
-									<button
-										type="button"
-										className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-									>
-										<BarsArrowUpIcon
-											aria-hidden="true"
-											className="-ml-0.5 h-5 w-5 text-gray-400"
-										/>
-										Sort
-									</button>
+							<Menu as="section" className="relative">
+								<MenuButton className="dark:text-gray-200 relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+									<BarsArrowUpIcon
+										aria-hidden="true"
+										className="-ml-0.5 h-5 w-5 text-gray-200"
+									/>
+									Sort
 								</MenuButton>
 								<MenuItems
 									transition
@@ -82,7 +82,7 @@ export default function DashboardTeams() {
 
 						<NavLink
 							end
-							to={"create"}
+							to={routeCreate}
 							relative="route"
 							type="button"
 							caseSensitive

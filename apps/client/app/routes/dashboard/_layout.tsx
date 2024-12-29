@@ -32,8 +32,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		...authRequest.headers.entries(),
 	]);
 
-	console.log(requestClone.headers, authRequest.headers);
-
 	if (mergedHeaders.get("cookie")?.includes("better-auth")) return null;
 
 	return redirect("/sing-in", {

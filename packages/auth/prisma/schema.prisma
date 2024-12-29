@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  url      = "file:./dev.db"
 }
 
 model User {
@@ -20,10 +20,10 @@ model User {
   banReason     String?
   banExpires    DateTime?
   age           Int?
-  Account       Account[]
-  Invitation    Invitation[]
-  Member        Member[]
-  Session       Session[]
+  accounts      Account[]
+  invitations   Invitation[]
+  members       Member[]
+  sessions      Session[]
 
   @@map("user")
 }
@@ -75,14 +75,14 @@ model Verification {
 }
 
 model Organization {
-  id         String       @id
-  name       String
-  slug       String?      @unique
-  logo       String?
-  createdAt  DateTime
-  metadata   String?
-  Invitation Invitation[]
-  Member     Member[]
+  id          String       @id
+  name        String
+  slug        String?      @unique
+  logo        String?
+  createdAt   DateTime
+  metadata    String?
+  invitations Invitation[]
+  members     Member[]
 
   @@map("organization")
 }

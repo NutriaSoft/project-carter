@@ -16,7 +16,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 			.json();
 
 		console.log(result);
-		return json(result);
+		return result;
 	} catch (error) {
 		console.log(error);
 		return null;
@@ -39,13 +39,15 @@ export default function Index() {
 							src={person.image ? person.image : ""}
 							className="mx-auto h-32 w-32 flex-shrink-0 rounded-full"
 						/>
-						<h3 className="mt-6 text-sm font-medium text-gray-900">
-							{person.name}
-						</h3>
 						<dl className="mt-1 flex flex-grow flex-col justify-between">
-							<dt className="sr-only">Title</dt>
-							<dd className="text-sm text-gray-500">{person.role}</dd>
 							<dt className="sr-only">Role</dt>
+							<dd className=" mt-6 text-xs text-gray-500 uppercase">
+								{person.role}
+							</dd>
+							<dt className="sr-only">Name</dt>
+							<dd className="text-sm font-medium text-gray-900 capitalize">
+								{person.name}
+							</dd>
 							<dd className="mt-3 space-x-2">
 								<span className="inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 text-xs font-medium text-gray-900 ring-1 ring-inset ring-gray-200 capitalize">
 									<svg
