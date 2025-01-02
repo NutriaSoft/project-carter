@@ -1,25 +1,21 @@
 import { logger } from "@chneau/elysia-logger";
 import type { auth } from "@package/auth";
-import { type Context, Elysia } from "elysia";
+import { type Context, Elysia, t } from "elysia";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { AuthUserInfo } from "../utils/auth-user.handler";
 import { AuthHandler } from "../utils/better-auth.handler";
 
-const app = new Elysia({
-	// serve: {
-	// 	hostname: process.env.AUTH_SERVER_HOSTNAME,
-	// },
-})
+const app = new Elysia({})
 	.use(logger())
-	.derive(({ request }) => AuthMiddleware(request))
 	.all("/api/auth/*", AuthHandler, {
-		beforeHandle(ctx: Context) {
-			console.log(ctx.request, ctx.body);
-		},
 		async afterHandle(ctx: Context) {
-			console.log(await ctx.response);
+			// console.log(await ctx.response);
+		},
+		error(ctx: Context) {
+			console.log(ctx.error);
 		},
 	})
+	.derive((ctx: Context) => AuthMiddleware(ctx.request))
 	.get(
 		"/user",
 		({
