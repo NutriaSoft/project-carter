@@ -1,26 +1,25 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import { BarsArrowUpIcon, UsersIcon } from "@heroicons/react/24/outline";
-import { cn } from "@package/ui/utils";
-import { NavLink, Outlet, useLocation } from "@remix-run/react";
-import { useMemo } from "react";
+// import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+// import { BarsArrowUpIcon, UsersIcon } from "@heroicons/react/24/outline";
+// import { cn } from "@package/ui/utils";
+import {
+	// 	NavLink,
+	// 	useLocation
+	Outlet,
+} from "react-router";
+// import { useMemo } from "react";
 import SectionNav from "./section-head";
 
-/*
-	! es de admitir que es la peor implementacion que se me ocurrio para manejar el enrutamiento del boton create
-	? Refact Router: create btn
-**/
-
 export default function DashboardTeams() {
-	const titlePage: string = "teams";
-	const { pathname } = useLocation();
-	const routeCreate = useMemo(
-		() => (pathname.includes("create") ? pathname : `${pathname}/create`),
-		[pathname],
-	);
+	// const titlePage: string = "teams";
+	// const { pathname } = useLocation();
+	// const routeCreate = useMemo(
+	// 	() => (pathname.includes("create") ? pathname : `${pathname}/create`),
+	// 	[pathname],
+	// );
 
 	return (
 		<>
-			<header className="bg-white dark:bg-neutral-950 ">
+			{/* <header className="bg-white dark:bg-neutral-950 ">
 				<div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 md:flex md:items-center md:justify-between">
 					<h1 className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-200 capitalize">
 						{titlePage}
@@ -99,7 +98,7 @@ export default function DashboardTeams() {
 						</NavLink>
 					</div>
 				</div>
-			</header>
+			</header> */}
 			<main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-6 shadow-inner">
 				<SectionNav />
 				<Outlet />

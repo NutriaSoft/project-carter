@@ -1,8 +1,7 @@
 import { PrismaClient } from "@prisma/client";
-import { type User, betterAuth } from "better-auth";
+import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { admin, openAPI, organization } from "better-auth/plugins";
-import type { Context } from "elysia";
 import { smtp_transporter } from "./smtp";
 
 const prisma = new PrismaClient();

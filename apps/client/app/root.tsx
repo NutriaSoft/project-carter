@@ -1,4 +1,4 @@
-import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from "react-router";
 import {
 	Links,
 	Meta,
@@ -10,7 +10,7 @@ import {
 	useNavigate,
 	useRouteError,
 	useRouteLoaderData,
-} from "@remix-run/react";
+} from "react-router";
 
 import {
 	PreventFlashOnWrongTheme,
@@ -19,9 +19,10 @@ import {
 	useTheme,
 } from "remix-themes";
 
-import styles from "./tailwind.css?url";
+import styles from "@package/ui/globals.css?url";
 
 import type { ReactNode } from "react";
+
 import { themeSessionResolver } from "./utils/theme.server";
 
 export const links: LinksFunction = () => [
@@ -35,6 +36,10 @@ export const links: LinksFunction = () => [
 	{
 		rel: "stylesheet",
 		href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+	},
+	{
+		rel: "stylesheet",
+		href: "https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap",
 	},
 ];
 
@@ -91,10 +96,7 @@ function InnerLayout({
 				<Meta />
 				<Links />
 			</head>
-			<body
-				className="bg-white text-black dark:bg-black dark:text-white"
-				suppressHydrationWarning
-			>
+			<body className=" text-black  dark:text-white" suppressHydrationWarning>
 				{children}
 				<ScrollRestoration />
 				<PreventFlashOnWrongTheme ssrTheme={ssrTheme} />

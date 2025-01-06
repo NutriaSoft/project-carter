@@ -1,7 +1,7 @@
 // import { auth_client } from "~/utils/auth-client.server";
 
-import type { ActionFunctionArgs } from "@remix-run/node";
-import { Form } from "@remix-run/react";
+import type { ActionFunctionArgs } from "react-router";
+import { Form } from "react-router";
 
 export async function action({ request }: ActionFunctionArgs) {
 	console.log(request);

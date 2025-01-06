@@ -1,7 +1,7 @@
 import { EnvelopeIcon, PhoneIcon } from "@heroicons/react/20/solid";
 import type { authClient } from "@package/auth";
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import { json, useLoaderData } from "@remix-run/react";
+import type { LoaderFunctionArgs } from "react-router";
+import { useLoaderData } from "react-router";
 import { authServer } from "~/utils/auh-server.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {

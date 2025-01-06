@@ -1,8 +1,8 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import { type MetaFunction, Outlet, redirect } from "@remix-run/react";
+import { Button } from "@package/ui/components/button";
+import type { LoaderFunctionArgs } from "react-router";
+import { type MetaFunction, Outlet, redirect } from "react-router";
 import { authServer } from "~/utils/auh-server.server";
 import { Navbar } from "./navbar";
-
 export default function DashboardLayout() {
 	return (
 		<>

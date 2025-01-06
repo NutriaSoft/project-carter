@@ -1,23 +1,61 @@
+// {
+// 	"$schema": "https://json.schemastore.org/tsconfig",
+// 	"display": "React Library",
+// 	"compilerOptions": {
+// 		//"outDir": "dist"
+// 		"declaration": true,
+// 		"declarationMap": true,
+// 		"esModuleInterop": true,
+// 		"incremental": false,
+// 		"isolatedModules": true,
+// 		"lib": ["es2022", "DOM", "DOM.Iterable"],
+// 		"module": "NodeNext",
+// 		"moduleDetection": "force",
+// 		"moduleResolution": "NodeNext",
+// 		"noUncheckedIndexedAccess": true,
+// 		"resolveJsonModule": true,
+// 		"skipLibCheck": true,
+// 		"strict": true,
+// 		"target": "ES2022",
+// 		"jsx": "react-jsx",
+// 		"baseUrl": ".",
+// 		"paths": {
+// 			"@package/ui/*": ["./src/*"]
+// 		}
+// 	},
+// 	"include": ["."],
+// 	"exclude": ["node_modules", "dist"]
+// }
+
 {
-	"$schema": "https://json.schemastore.org/tsconfig",
+	"include": [
+		"**/*.ts",
+		"**/*.tsx",
+		"**/.server/**/*.ts",
+		"**/.server/**/*.tsx",
+		"**/.client/**/*.ts",
+		"**/.client/**/*.tsx"
+	],
 	"compilerOptions": {
-		"jsx": "react-jsx",
-		"outDir": "dist",
-		"declaration": true,
-		"declarationMap": true,
-		"esModuleInterop": true,
-		"incremental": false,
+		"lib": ["DOM", "DOM.Iterable", "ES2022"],
+		"types": ["@remix-run/node", "vite/client"],
 		"isolatedModules": true,
-		"lib": ["es2022", "DOM", "DOM.Iterable"],
-		"module": "NodeNext",
-		"moduleDetection": "force",
-		"moduleResolution": "NodeNext",
-		"noUncheckedIndexedAccess": true,
+		"esModuleInterop": true,
+		"jsx": "react-jsx",
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
 		"resolveJsonModule": true,
-		"skipLibCheck": true,
+		"target": "ES2022",
 		"strict": true,
-		"target": "ES2022"
-	},
-	"include": ["src"],
-	"exclude": ["node_modules", "dist"]
+		"allowJs": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"baseUrl": ".",
+		"paths": {
+			"@package/ui/*": ["./*"]
+		},
+
+		// Vite takes care of building everything, not tsc.
+		"noEmit": true
+	}
 }

@@ -1,5 +1,5 @@
-import { cn } from "@package/ui/utils";
-import { NavLink } from "@remix-run/react";
+import { cn } from "@package/ui/lib/utils";
+import { NavLink } from "react-router";
 
 const tabs = [
 	{ name: "List", href: "../teams" },
@@ -11,7 +11,7 @@ const tabs = [
 
 export default function Index() {
 	return (
-		<div className="relative border-b border-gray-200 pb-5 sm:pb-0">
+		<header className="relative border-b border-gray-200 pb-5 sm:pb-0">
 			<div className="mt-4">
 				<div className="sm:hidden">
 					<label htmlFor="current-tab" className="sr-only">
@@ -27,7 +27,11 @@ export default function Index() {
 						))}
 					</select>
 				</div>
-				<div className="hidden sm:block">
+				<div className="hidden sm:flex sm:flex-row sm:items-center sm:justify-between">
+					<h1 className="text-3xl  whitespace-nowrap pb-4 font-bold tracking-tight text-neutral-900 dark:text-neutral-200 capitalize">
+						Teams
+					</h1>
+
 					<nav className="-mb-px flex space-x-8">
 						{tabs.map((tab) => (
 							<NavLink
@@ -41,7 +45,7 @@ export default function Index() {
 										isActive
 											? "border-indigo-500 text-indigo-600"
 											: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
-										"whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium",
+										"whitespace-nowrap px-1 pb-3 text-sm font-medium",
 									)
 								}
 							>
@@ -51,6 +55,6 @@ export default function Index() {
 					</nav>
 				</div>
 			</div>
-		</div>
+		</header>
 	);
 }

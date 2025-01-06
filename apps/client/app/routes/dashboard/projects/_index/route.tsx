@@ -3,7 +3,7 @@ import {
 	DocumentMagnifyingGlassIcon,
 	PlusCircleIcon,
 } from "@heroicons/react/20/solid";
-import { NavLink } from "@remix-run/react";
+import { NavLink } from "react-router";
 
 const people = [
 	{

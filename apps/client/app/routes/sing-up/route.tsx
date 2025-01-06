@@ -5,8 +5,8 @@ import {
 	UsersIcon,
 } from "@heroicons/react/20/solid";
 import { authClient } from "@package/auth";
-import type { ActionFunctionArgs } from "@remix-run/node";
-import { Form, json, redirect, useActionData } from "@remix-run/react";
+import type { ActionFunctionArgs } from "react-router";
+import { Form, redirect, useActionData } from "react-router";
 import {
 	ValiError,
 	email,
@@ -36,9 +36,7 @@ const RegisterSchema = object({
 	),
 });
 
-export async function action({
-	request,
-}: ActionFunctionArgs): Promise<Response | undefined> {
+export async function action({ request }: ActionFunctionArgs) {
 	try {
 		const formData = await request.formData();
 
@@ -67,14 +65,14 @@ export async function action({
 
 		if (error instanceof Error) {
 			console.warn("ERROR CAUSA", error.cause);
-			return json({
+			return {
 				authError: error.message,
-			});
+			};
 		}
 		if (error instanceof ValiError) {
-			return json({
+			return {
 				formError: flatten(error.issues).nested,
-			});
+			};
 		}
 	}
 }

@@ -1,5 +1,5 @@
 {
-	"name": "email",
+	"name": "@package/email",
 	"module": "index.ts",
 	"type": "module",
 	"scripts": {

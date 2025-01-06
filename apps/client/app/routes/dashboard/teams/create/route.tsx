@@ -1,7 +1,7 @@
 // import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import { authClient } from "@package/auth";
-import type { ActionFunctionArgs } from "@remix-run/node";
-import { Form, json, redirect } from "@remix-run/react";
+import type { ActionFunctionArgs } from "react-router";
+import { Form, redirect } from "react-router";
 import { flatten, nonEmpty, object, pipe, safeParse, string } from "valibot";
 
 const CreateTeamSchema = object({
@@ -23,7 +23,7 @@ export async function action({ request: { formData } }: ActionFunctionArgs) {
 	if (!form.success) {
 		console.error("err", flatten<typeof CreateTeamSchema>(form.issues).nested);
 		const formError = flatten<typeof CreateTeamSchema>(form.issues).nested;
-		return json({ formError });
+		return { formError };
 	}
 
 	const { data, error } = await authClient.organization.create({
@@ -32,7 +32,7 @@ export async function action({ request: { formData } }: ActionFunctionArgs) {
 		// logo: "https://example.com/logo.png",
 	});
 
-	if (error) return json({ authError: error });
+	if (error) return { authError: error };
 
 	console.log("succes", form, { data, error });
 	return redirect("./success");

@@ -1,6 +1,6 @@
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
-import { cn } from "@package/ui/utils";
+import { cn } from "@package/ui/lib/utils";
 
 const projects = [
 	{

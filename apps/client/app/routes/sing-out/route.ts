@@ -1,4 +1,4 @@
-import { type LoaderFunctionArgs, redirect } from "@remix-run/node";
+import { type LoaderFunctionArgs, redirect } from "react-router";
 import { WretchError } from "wretch/resolver";
 import { authServer } from "~/utils/auh-server.server";
 

@@ -9,9 +9,9 @@ import {
 } from "@headlessui/react";
 import { MoonIcon, SunIcon } from "@heroicons/react/20/solid";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { cn } from "@package/ui/utils";
-import { NavLink } from "@remix-run/react";
-import type { NavLinkRenderProps } from "react-router-dom";
+import { cn } from "@package/ui/lib/utils";
+import { NavLink } from "react-router";
+import type { NavLinkRenderProps } from "react-router";
 import { Theme, useTheme } from "remix-themes";
 
 const user = {
