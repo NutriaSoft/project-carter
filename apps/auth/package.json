@@ -12,6 +12,7 @@
 	},
 	"dependencies": {
 		"@chneau/elysia-logger": "^1.0.8",
+		"@elysiajs/cors": "^1.2.0",
 		"elysia": "latest"
 	},
 	"devDependencies": {

@@ -1,5 +1,5 @@
 // import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
-import { authClient } from "@package/auth";
+import { client } from "@package/auth/src/client";
 import type { ActionFunctionArgs } from "react-router";
 import { Form, redirect } from "react-router";
 import { flatten, nonEmpty, object, pipe, safeParse, string } from "valibot";
@@ -26,7 +26,7 @@ export async function action({ request: { formData } }: ActionFunctionArgs) {
 		return { formError };
 	}
 
-	const { data, error } = await authClient.organization.create({
+	const { data, error } = await client.organization.create({
 		name: name,
 		slug: `isc-${name}`,
 		// logo: "https://example.com/logo.png",

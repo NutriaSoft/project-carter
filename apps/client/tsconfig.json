@@ -26,7 +26,8 @@
 		"baseUrl": ".",
 		"paths": {
 			"~/*": ["./app/*"],
-			"@package/ui/*": ["../../packages/ui/*"]
+			"@package/ui/*": ["../../packages/ui/*"],
+			"@package/auth/*": ["../../packages/auth/*"]
 		},
 
 		// Vite takes care of building everything, not tsc.

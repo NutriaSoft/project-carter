@@ -6,7 +6,7 @@ import { smtp_transporter } from "./smtp";
 
 const prisma = new PrismaClient();
 
-export const auth = betterAuth({
+export const server = betterAuth({
 	baseURL: "http://localhost:8888",
 	trustedOrigins: ["http://localhost:5173", "http://127.0.0.1:5173"],
 	plugins: [admin(), organization(), openAPI()],

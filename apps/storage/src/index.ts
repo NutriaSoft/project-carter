@@ -1,5 +1,5 @@
 import { staticPlugin } from "@elysiajs/static";
-import { authClient } from "@package/auth";
+import { client } from "@package/auth/src/client";
 import { type Context, Elysia, file, t } from "elysia";
 
 const app = new Elysia()
@@ -12,7 +12,7 @@ const app = new Elysia()
 			const body = ctx.body.file;
 			const headers = ctx.request.headers;
 
-			const { data, error } = await authClient.getSession({
+			const { data, error } = await client.getSession({
 				fetchOptions: { headers },
 			});
 

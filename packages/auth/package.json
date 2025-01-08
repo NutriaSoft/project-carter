@@ -1,8 +1,7 @@
 {
 	"name": "@package/auth",
-	"types": "./src/index.ts",
-	"module": "./src/index.ts",
 	"type": "module",
+	"module": "index.js",
 	"devDependencies": {
 		"@types/bun": "latest"
 	},

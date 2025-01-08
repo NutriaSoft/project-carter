@@ -10,9 +10,10 @@ import {
 import { MoonIcon, SunIcon } from "@heroicons/react/20/solid";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { cn } from "@package/ui/lib/utils";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import type { NavLinkRenderProps } from "react-router";
 import { Theme, useTheme } from "remix-themes";
+import { authClient } from "~/utils/better-auth.client";
 
 const user = {
 	name: "Tom Cook",
@@ -29,14 +30,21 @@ const navigation = [
 	{ name: "Reports", href: "./reports" },
 ];
 
-const userNavigation = [
-	{ name: "Your Profile", href: "#" },
-	{ name: "Settings", href: "#" },
-	{ name: "Sign out", href: "/sing-out" },
-];
-
 export function Navbar() {
 	const [theme, setTheme] = useTheme();
+	const navigate = useNavigate();
+	const userNavigation = [
+		{ name: "Your Profile", href: "#" },
+		{ name: "Settings", href: "#" },
+		{
+			name: "Sign out",
+			onclick: async () => {
+				const { data, error } = await authClient.signOut();
+				navigate("/sing-in");
+				console.log("singOut", { data, error });
+			},
+		},
+	];
 
 	return (
 		<Disclosure as="nav" className="bg-gray-800">
@@ -118,12 +126,26 @@ export function Navbar() {
 								>
 									{userNavigation.map((item) => (
 										<MenuItem key={item.name}>
-											<a
-												href={item.href}
-												className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
-											>
-												{item.name}
-											</a>
+											<div>
+												{item.onclick && (
+													<button
+														type="button"
+														onClick={item.onclick}
+														className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
+													>
+														{item.name}
+													</button>
+												)}
+
+												{item.href && (
+													<a
+														href={item.href}
+														className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
+													>
+														{item.name}
+													</a>
+												)}
+											</div>
 										</MenuItem>
 									))}
 								</MenuItems>
@@ -197,16 +219,32 @@ export function Navbar() {
 						</button>
 					</div>
 					<div className="mt-3 space-y-1 px-2">
-						{userNavigation.map((item) => (
-							<DisclosureButton
-								key={item.name}
-								as="a"
-								href={item.href}
-								className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-							>
-								{item.name}
-							</DisclosureButton>
-						))}
+						{userNavigation.map((item) => {
+							if (item.onclick) {
+								return (
+									<DisclosureButton
+										key={item.name}
+										as="button"
+										type="button"
+										onClick={item.onclick}
+										className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+									>
+										{item.name}
+									</DisclosureButton>
+								);
+							}
+
+							return (
+								<DisclosureButton
+									key={item.name}
+									as="a"
+									href={item.href}
+									className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+								>
+									{item.name}
+								</DisclosureButton>
+							);
+						})}
 					</div>
 				</div>
 			</DisclosurePanel>

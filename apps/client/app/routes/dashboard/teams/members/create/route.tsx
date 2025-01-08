@@ -1,113 +1,24 @@
 import { faker } from "@faker-js/faker";
-import { PhotoIcon } from "@heroicons/react/24/solid";
 import { Input } from "@package/ui/components/input";
 import { Label } from "@package/ui/components/label";
 import { PhoneInput } from "@package/ui/components/phone-input";
-import type { ActionFunctionArgs } from "react-router";
-import { Form } from "react-router";
-import {
-	ValiError,
-	// 	email,
-	flatten,
-	// 	minLength,
-	// 	nonEmpty,
-	// 	object,
-	// 	parse,
-	// 	pipe,
-	// 	string,
-} from "valibot";
-import "react-advanced-cropper/dist/style.css";
-import {
-	CircleStencil,
-	FixedCropper,
-	ImageRestriction,
-} from "react-advanced-cropper";
+import CreateMemberAction from "./create-member.action";
 
-// import { authServer } from "~/utils/auh-server.server";
-
-// const RegisterSchema = object({
-// 	role: pipe(
-// 		string("Your role must be a string."),
-// 		nonEmpty("Please enter your role."),
-// 	),
-// 	name: pipe(
-// 		string("Your name must be a string."),
-// 		nonEmpty("Please enter your name."),
-// 	),
-// 	email: pipe(
-// 		string("Your email must be a string."),
-// 		nonEmpty("Please enter your email."),
-// 		email("The email address is badly formatted."),
-// 	),
-// 	password: pipe(
-// 		string("Your password must be a string."),
-// 		nonEmpty("Please enter your password."),
-// 		minLength(8, "Your password must have 8 characters or more."),
-// 	),
-// });
-
-export async function action({ request }: ActionFunctionArgs) {
-	try {
-		const requestClone = request.clone();
-		const formData = await requestClone.formData();
-		// const headers = requestClone.headers;
-
-		console.log(formData);
-
-		// const passwordField = String(formData.get("password"));
-		// const emailField = String(formData.get("email"));
-		// const nameField = String(formData.get("name"));
-		// const roleField = String(formData.get("role"));
-
-		// const formValidate = parse(RegisterSchema, {
-		// 	name: nameField,
-		// 	email: emailField,
-		// 	password: passwordField,
-		// 	role: roleField,
-		// });
-
-		// headers.delete("content-length");
-		// const authRequest = await authServer
-		// 	.headers(headers)
-		// 	.url("/admin/create-user")
-		// 	.json(formValidate)
-		// 	.post()
-		// 	.res();
-
-		// console.log({ formValidate, headers });
-		// const newUser = await authClient.admin.createUser({
-		// 	name: formValidate.name,
-		// 	email: formValidate.email,
-		// 	password: formValidate.password,
-		// 	role: formValidate.role,
-		// });
-
-		// console.log("NEW USER", authRequest);
-
-		return null;
-	} catch (error: unknown) {
-		if (error instanceof ValiError) {
-			return {
-				formError: flatten(error.issues).nested,
-			};
-		}
-		return error;
-	}
-}
+// export const action = CreateMemberAction;
 
 export default function Index() {
-	const sex = faker.person.sexType();
-	const firstName = faker.person.firstName(sex);
-	const lastName = faker.person.lastName(sex);
-	const email = faker.internet.email({ firstName, lastName });
-	const phone = faker.phone.number({ style: "international" });
-	const city = faker.location.city();
-	const province = faker.location.state();
-	const address = faker.location.streetAddress();
-	const birthday = faker.date.between({ from: "2000-01-01", to: Date.now() });
+	// const sex = faker.person.sexType();
+	// const firstName = faker.person.firstName(sex);
+	// const lastName = faker.person.lastName(sex);
+	// const email = faker.internet.email({ firstName, lastName });
+	// const phone = faker.phone.number({ style: "international" });
+	// const city = faker.location.city();
+	// const province = faker.location.state();
+	// const address = faker.location.streetAddress();
+	// const birthday = faker.date.between({ from: "2000-01-01", to: Date.now() });
 
 	return (
-		<Form method="post" className="pt-4" encType="multipart/form-data">
+		<div className="pt-4">
 			<section className="pb-8">
 				<h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-gray-200">
 					Profile CREATE MEMBER
@@ -119,140 +30,7 @@ export default function Index() {
 			</section>
 
 			<div className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-6">
-				<div className="sm:col-span-3">
-					<div className="grid grid-cols-2 gap-x-6 gap-y-4 ">
-						<div className="sm:col-span-1">
-							<Label htmlFor="firstName">firstName</Label>
-							<Input
-								id="firstName"
-								type="text"
-								value={firstName}
-								autoComplete="name"
-								className="mt-2"
-							/>
-						</div>
-
-						<div className="sm:col-span-1">
-							<Label htmlFor="lastName">lastName</Label>
-							<Input
-								id="lastName"
-								name="lastName"
-								type="text"
-								autoComplete="family-name"
-								value={lastName}
-								className="mt-2"
-							/>
-						</div>
-
-						<div className="sm:col-span-1">
-							<Label htmlFor="phone">Phone</Label>
-							<PhoneInput
-								value={phone}
-								type="tel"
-								className="mt-2"
-								id="phone"
-								autoComplete="mobile tel"
-								name="phone"
-							/>
-						</div>
-
-						<div className="sm:col-span-1">
-							<label
-								htmlFor="Birthday"
-								className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200"
-							>
-								Birthday
-							</label>
-							<div className="mt-2">
-								<input
-									id="Birthday"
-									name="Birthday"
-									type="date"
-									autoComplete="bday-day"
-									value={birthday.toLocaleDateString("fr-CA")}
-									className="block bg-transparent  w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-								/>
-							</div>
-						</div>
-
-						<div className="sm:col-span-1">
-							<label
-								htmlFor="email"
-								className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200"
-							>
-								Email
-							</label>
-							<div className="mt-2">
-								<input
-									disabled
-									id="email"
-									name="email"
-									type="email"
-									value={email}
-									autoComplete="address-level1"
-									className="block bg-transparent  w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-								/>
-							</div>
-						</div>
-
-						<div className="sm:col-span-1">
-							<label
-								htmlFor="city"
-								className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200"
-							>
-								City
-							</label>
-							<div className="mt-2">
-								<input
-									id="city"
-									name="city"
-									type="text"
-									value={city}
-									autoComplete="address-level2"
-									className="block bg-transparent  w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-								/>
-							</div>
-						</div>
-
-						<div className="sm:col-span-1">
-							<label
-								htmlFor="region"
-								className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200"
-							>
-								State / Province
-							</label>
-							<div className="mt-2">
-								<input
-									id="region"
-									name="region"
-									type="text"
-									value={province}
-									autoComplete="address-level1"
-									className="block bg-transparent w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-								/>
-							</div>
-						</div>
-
-						<div className="col-span-full">
-							<label
-								htmlFor="street-address"
-								className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200"
-							>
-								Street address
-							</label>
-							<div className="mt-2">
-								<input
-									id="street-address"
-									name="street-address"
-									type="text"
-									autoComplete="street-address"
-									value={address}
-									className="block bg-transparent w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-								/>
-							</div>
-						</div>
-					</div>
-				</div>
+				<div className="sm:col-span-3">1</div>
 
 				<div className="col-span-3">
 					<label
@@ -304,7 +82,7 @@ export default function Index() {
 					Save
 				</button>
 			</div>
-		</Form>
+		</div>
 	);
 }
 

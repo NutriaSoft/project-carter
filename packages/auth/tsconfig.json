@@ -1,5 +1,9 @@
 {
 	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"@package/auth/*": ["./*"]
+		},
 		// Enable latest features
 		"lib": ["ESNext", "DOM"],
 		"target": "ESNext",

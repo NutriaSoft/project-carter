@@ -10,7 +10,7 @@
 		"format": "biome format --write ./app",
 		"lint:fix": "biome lint --write --unsafe ./app",
 		"start": "react-router-serve ./build/server/index.js",
-		"typecheck": "react-router typegen && tsc"
+		"type-check": "react-router typegen && tsc --noEmit"
 	},
 	"dependencies": {
 		"@faker-js/faker": "^9.3.0",
@@ -20,6 +20,7 @@
 		"@package/ui": "workspace:*",
 		"@react-router/node": "^7.1.1",
 		"@react-router/serve": "^7.1.1",
+		"better-auth": "^1.1.10",
 		"isbot": "^4.4.0",
 		"react": "^18.3.1",
 		"react-advanced-cropper": "^0.20.0",

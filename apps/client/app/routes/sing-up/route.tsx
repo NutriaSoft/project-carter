@@ -4,7 +4,7 @@ import {
 	ExclamationTriangleIcon,
 	UsersIcon,
 } from "@heroicons/react/20/solid";
-import { authClient } from "@package/auth";
+import { client } from "@package/auth/src/client";
 import type { ActionFunctionArgs } from "react-router";
 import { Form, redirect, useActionData } from "react-router";
 import {
@@ -50,7 +50,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		const callbackURL = `${origin}/sing-in`;
 		console.log(callbackURL);
 
-		const { error } = await authClient.signUp.email({
+		const { error } = await client.signUp.email({
 			email: formParse.email,
 			password: formParse.password,
 			name: formParse.name,

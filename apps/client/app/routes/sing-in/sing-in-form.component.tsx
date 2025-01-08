@@ -9,9 +9,9 @@ import {
 } from "@package/ui/components/card";
 import { Input } from "@package/ui/components/input";
 import { Label } from "@package/ui/components/label";
+import { useRemixForm } from "@package/ui/hooks/use-remix-form";
 import { cn } from "@package/ui/lib/utils";
-import { useRemixForm } from "@package/ui/src/hooks/use-remix-form";
-import { Form, Link, useFetcher } from "react-router";
+import { Form, Link, useFetcher, useNavigate } from "react-router";
 import type { InferInput } from "valibot";
 import { SingInSchema } from "./sing-in.schema";
 
@@ -31,24 +31,21 @@ export function SingInForm({
 	...props
 }: ComponentPropsWithoutRef<"div">) {
 	const fetcher = useFetcher();
-
+	const navigate = useNavigate();
 	const form = useRemixForm<InferInput<typeof SingInSchema>>({
 		fetcher,
 		mode: "onSubmit",
 		stringifyAllValues: false,
 		resolver: valibotResolver(SingInSchema),
-
 		submitHandlers: {
 			async onValid({ email, password }) {
-				console.log({ email, password });
+				const { error } = await authClient.signIn.email({ email, password });
 
-				const { data: authClientData, error: authClientError } =
-					await authClient.signIn.email({
-						email,
-						password,
-					});
-
-				console.log({ data: authClientData, error: authClientError });
+				if (error) {
+					alert({ error });
+					return;
+				}
+				navigate("/dashboard");
 			},
 		},
 		submitConfig: {

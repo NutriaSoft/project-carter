@@ -19,7 +19,7 @@ import {
 	useTheme,
 } from "remix-themes";
 
-import styles from "@package/ui/globals.css?url";
+import styles from "@package/ui/styles/globals.css";
 
 import type { ReactNode } from "react";
 

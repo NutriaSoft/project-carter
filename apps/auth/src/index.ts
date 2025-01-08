@@ -1,11 +1,13 @@
 import { logger } from "@chneau/elysia-logger";
-import type { auth } from "@package/auth";
+import { cors } from "@elysiajs/cors";
+import type { server } from "@package/auth/src/server";
 import { type Context, Elysia, t } from "elysia";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { AuthUserInfo } from "../utils/auth-user.handler";
 import { AuthHandler } from "../utils/better-auth.handler";
 
 const app = new Elysia({})
+	.use(cors())
 	.use(logger())
 	.all("/api/auth/*", AuthHandler, {
 		async afterHandle(ctx: Context) {
@@ -22,8 +24,8 @@ const app = new Elysia({})
 			user,
 			session,
 		}: {
-			user: typeof auth.$Infer.Session.user | null;
-			session: typeof auth.$Infer.Session.session | null;
+			user: typeof server.$Infer.Session.user | null;
+			session: typeof server.$Infer.Session.session | null;
 		}) => AuthUserInfo(user, session),
 	)
 	.listen(Number(process.env.AUTH_SERVER_PORT));
