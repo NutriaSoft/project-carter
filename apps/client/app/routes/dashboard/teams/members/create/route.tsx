@@ -1,12 +1,48 @@
+import { valibotResolver } from "@hookform/resolvers/valibot";
+
 import { faker } from "@faker-js/faker";
 import { Input } from "@package/ui/components/input";
 import { Label } from "@package/ui/components/label";
 import { PhoneInput } from "@package/ui/components/phone-input";
+import { useRemixForm } from "@package/ui/hooks/use-remix-form";
+import { useFetcher } from "react-router";
+import type { InferInput } from "valibot";
+import { authClient } from "~/utils/better-auth.client";
 import CreateMemberAction from "./create-member.action";
+import CreateProfileForm from "./create-profile-form";
+import { CreateProfileMemberSchema } from "./create-profile-member.schema";
 
 // export const action = CreateMemberAction;
 
 export default function Index() {
+	const fetcher = useFetcher();
+	const form = useRemixForm<InferInput<typeof CreateProfileMemberSchema>>({
+		fetcher,
+		mode: "onSubmit",
+		stringifyAllValues: false,
+		resolver: valibotResolver(CreateProfileMemberSchema),
+		submitHandlers: {
+			async onValid(formValues) {
+				const { error } = await authClient.admin.createUser(formValues);
+
+				if (error) {
+					alert({ error });
+					return;
+				}
+
+				console.log();
+			},
+		},
+		submitConfig: {
+			action: "/sing-in",
+			method: "POST",
+		},
+		defaultValues: {
+			email: "admin@example.com",
+			password: "123123123",
+		},
+	});
+
 	// const sex = faker.person.sexType();
 	// const firstName = faker.person.firstName(sex);
 	// const lastName = faker.person.lastName(sex);
@@ -30,7 +66,9 @@ export default function Index() {
 			</section>
 
 			<div className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-6">
-				<div className="sm:col-span-3">1</div>
+				<div className="sm:col-span-3">
+					<CreateProfileForm form={form} />
+				</div>
 
 				<div className="col-span-3">
 					<label
