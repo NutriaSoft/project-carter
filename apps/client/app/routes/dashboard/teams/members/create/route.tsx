@@ -1,9 +1,5 @@
-import { valibotResolver } from "@hookform/resolvers/valibot";
-
 import { faker } from "@faker-js/faker";
-import { Input } from "@package/ui/components/input";
-import { Label } from "@package/ui/components/label";
-import { PhoneInput } from "@package/ui/components/phone-input";
+import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useRemixForm } from "@package/ui/hooks/use-remix-form";
 import { useFetcher } from "react-router";
 import type { InferInput } from "valibot";
@@ -12,9 +8,16 @@ import CreateMemberAction from "./create-member.action";
 import CreateProfileForm from "./create-profile-form";
 import { CreateProfileMemberSchema } from "./create-profile-member.schema";
 
-// export const action = CreateMemberAction;
+export const action = CreateMemberAction;
 
 export default function Index() {
+	const sex = faker.person.sexType();
+	const firstName = faker.person.firstName(sex);
+	const lastName = faker.person.lastName(sex);
+	const email = faker.internet.email({ firstName, lastName });
+	const phone = faker.phone.number({ style: "international" });
+	const birthday = faker.date.between({ from: "2000-01-01", to: Date.now() });
+
 	const fetcher = useFetcher();
 	const form = useRemixForm<InferInput<typeof CreateProfileMemberSchema>>({
 		fetcher,
@@ -23,7 +26,10 @@ export default function Index() {
 		resolver: valibotResolver(CreateProfileMemberSchema),
 		submitHandlers: {
 			async onValid(formValues) {
-				const { error } = await authClient.admin.createUser(formValues);
+				const { error } = await authClient.admin.createUser({
+					name: `${formValues.firstName} ${formValues.lastName}`,
+					...formValues,
+				});
 
 				if (error) {
 					alert({ error });
@@ -38,20 +44,15 @@ export default function Index() {
 			method: "POST",
 		},
 		defaultValues: {
-			email: "admin@example.com",
+			role: "user",
 			password: "123123123",
+			email,
+			birthday,
+			firstName,
+			lastName,
+			phone,
 		},
 	});
-
-	// const sex = faker.person.sexType();
-	// const firstName = faker.person.firstName(sex);
-	// const lastName = faker.person.lastName(sex);
-	// const email = faker.internet.email({ firstName, lastName });
-	// const phone = faker.phone.number({ style: "international" });
-	// const city = faker.location.city();
-	// const province = faker.location.state();
-	// const address = faker.location.streetAddress();
-	// const birthday = faker.date.between({ from: "2000-01-01", to: Date.now() });
 
 	return (
 		<div className="pt-4">

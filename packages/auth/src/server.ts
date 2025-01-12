@@ -15,14 +15,26 @@ export const server = betterAuth({
 	}),
 	user: {
 		additionalFields: {
-			age: {
+			lastName: {
+				type: "string",
+				required: true,
+			},
+			firstName: {
+				type: "string",
+				required: true,
+			},
+			phone: {
+				type: "string",
+				required: true,
+			},
+			birthday: {
 				type: "number",
 				required: false,
 			},
 		},
 	},
 	logger: {
-		disabled: true,
+		disabled: false,
 	},
 	emailVerification: {
 		sendEmailVerificationOnSignUp: true,
@@ -47,3 +59,5 @@ export const server = betterAuth({
 		requireEmailVerification: true,
 	},
 });
+
+export const auth = server;

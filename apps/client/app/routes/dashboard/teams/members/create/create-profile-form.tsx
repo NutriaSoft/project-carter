@@ -15,10 +15,16 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@package/ui/components/popover";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@package/ui/components/select";
 import type { useRemixForm } from "@package/ui/hooks/use-remix-form";
 import { cn } from "@package/ui/lib/utils";
 import { format } from "date-fns";
-import type { ReactNode } from "react";
 import type { InferInput } from "valibot";
 import type { CreateProfileMemberSchema } from "./create-profile-member.schema";
 
@@ -34,13 +40,43 @@ export default function CreateProfileForm({ form }: CreateProfileFormProps) {
 			<div className="grid grid-cols-2 gap-x-6 gap-y-4 ">
 				<div className="sm:col-span-1">
 					<FormField
+						name="role"
+						control={form.control}
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Role</FormLabel>
+								<Select
+									onValueChange={field.onChange}
+									defaultValue={field.value}
+								>
+									<FormControl>
+										<SelectTrigger>
+											<SelectValue placeholder="Select a verified email to display" />
+										</SelectTrigger>
+									</FormControl>
+									<SelectContent>
+										<SelectItem value="m@example.com">m@example.com</SelectItem>
+										<SelectItem value="m@google.com">m@google.com</SelectItem>
+										<SelectItem value="m@support.com">m@support.com</SelectItem>
+									</SelectContent>
+								</Select>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+				</div>
+			</div>
+
+			<div className="grid grid-cols-2 gap-x-6 gap-y-4 ">
+				<div className="sm:col-span-1">
+					<FormField
 						control={form.control}
 						name="firstName"
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel>firstName</FormLabel>
 								<FormControl>
-									<Input {...field} placeholder="example@domain.com" />
+									<Input {...field} placeholder="Ej: Dominik Alejandro" />
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -56,7 +92,7 @@ export default function CreateProfileForm({ form }: CreateProfileFormProps) {
 							<FormItem>
 								<FormLabel>lastName</FormLabel>
 								<FormControl>
-									<Input {...field} placeholder="example@domain.com" />
+									<Input {...field} placeholder="Ej: Martinez Prince" />
 								</FormControl>
 								<FormMessage />
 							</FormItem>

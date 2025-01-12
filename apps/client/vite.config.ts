@@ -4,7 +4,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
 	optimizeDeps: {
-		force: true, // Fuerza la reoptimización de dependencias
+		force: false, // Fuerza la reoptimización de dependencias
 	},
 
 	plugins: [reactRouter(), tsconfigPaths()],

@@ -20,6 +20,10 @@ model User {
   banReason     String?
   banExpires    DateTime?
   age           Int?
+  lastName      String
+  firstName     String
+  phone         String
+  birthday      Int?
   accounts      Account[]
   invitations   Invitation[]
   members       Member[]
@@ -93,8 +97,8 @@ model Member {
   userId         String
   role           String
   createdAt      DateTime
-  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("member")
 }
@@ -107,8 +111,8 @@ model Invitation {
   status         String
   expiresAt      DateTime
   inviterId      String
-  user           User         @relation(fields: [inviterId], references: [id], onDelete: Cascade)
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [inviterId], references: [id], onDelete: Cascade)
 
   @@map("invitation")
 }

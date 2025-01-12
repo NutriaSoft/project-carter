@@ -2,7 +2,7 @@ import { Button } from "@package/ui/components/button";
 import type { LoaderFunctionArgs } from "react-router";
 import { type MetaFunction, Outlet, redirect } from "react-router";
 import { authServer } from "~/utils/auh-server.server";
-import { DashboardLoader } from "./dashboard.loader";
+import { DashboardLoader } from "./loader";
 import { Navbar } from "./navbar";
 
 export const meta: MetaFunction = () => {

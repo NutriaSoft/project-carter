@@ -1,287 +1,256 @@
+import { faker } from "@faker-js/faker";
 import {
+	CalendarIcon,
 	EnvelopeIcon,
 	ExclamationCircleIcon,
 	ExclamationTriangleIcon,
 	UsersIcon,
 } from "@heroicons/react/20/solid";
+import { valibotResolver } from "@hookform/resolvers/valibot";
 import { client } from "@package/auth/src/client";
-import type { ActionFunctionArgs } from "react-router";
-import { Form, redirect, useActionData } from "react-router";
+import { Button } from "@package/ui/components/button";
+import { Calendar } from "@package/ui/components/calendar";
 import {
-	ValiError,
-	email,
-	flatten,
-	minLength,
-	nonEmpty,
-	object,
-	parse,
-	pipe,
-	string,
-} from "valibot";
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@package/ui/components/card";
+import {
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+	Form as FormProvider,
+} from "@package/ui/components/form";
+import { Input } from "@package/ui/components/input";
+import { Label } from "@package/ui/components/label";
+import { PhoneInput } from "@package/ui/components/phone-input";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@package/ui/components/popover";
+import { useRemixForm } from "@package/ui/hooks/use-remix-form";
+import { cn } from "@package/ui/lib/utils";
+import { format } from "date-fns";
+import { Form, useActionData, useFetcher } from "react-router";
+import type { InferInput } from "valibot";
+import CreateMemberAction from "~/routes/dashboard/teams/members/create/create-member.action";
+import { CreateProfileMemberSchema } from "~/routes/dashboard/teams/members/create/create-profile-member.schema";
+import { authClient } from "~/utils/better-auth.client";
+import { ThemeToggle } from "./theme-toogle.component";
 
-const RegisterSchema = object({
-	name: pipe(
-		string("Your name must be a string."),
-		nonEmpty("Please enter your name."),
-	),
-	email: pipe(
-		string("Your email must be a string."),
-		nonEmpty("Please enter your email."),
-		email("The email address is badly formatted."),
-	),
-	password: pipe(
-		string("Your password must be a string."),
-		nonEmpty("Please enter your password."),
-		minLength(8, "Your password must have 8 characters or more."),
-	),
-});
-
-export async function action({ request }: ActionFunctionArgs) {
-	try {
-		const formData = await request.formData();
-
-		const formParse = parse(RegisterSchema, {
-			password: String(formData.get("password")),
-			email: String(formData.get("email")),
-			name: String(formData.get("name")),
-		});
-
-		const origin = request.headers.get("origin");
-		const callbackURL = `${origin}/sing-in`;
-		console.log(callbackURL);
-
-		const { error } = await client.signUp.email({
-			email: formParse.email,
-			password: formParse.password,
-			name: formParse.name,
-			callbackURL,
-		});
-
-		if (error) throw new Error(error.message, { cause: error });
-
-		return redirect("./success");
-	} catch (error) {
-		if (error instanceof Response) return error;
-
-		if (error instanceof Error) {
-			console.warn("ERROR CAUSA", error.cause);
-			return {
-				authError: error.message,
-			};
-		}
-		if (error instanceof ValiError) {
-			return {
-				formError: flatten(error.issues).nested,
-			};
-		}
-	}
-}
+export const action = CreateMemberAction;
 
 export default function SingUp() {
-	const serverAction = useActionData<typeof action>();
+	const fetcher = useFetcher();
+	const form = useRemixForm<InferInput<typeof CreateProfileMemberSchema>>({
+		fetcher,
+		mode: "onSubmit",
+		stringifyAllValues: false,
+		resolver: valibotResolver(CreateProfileMemberSchema),
+		submitHandlers: {
+			async onValid(formValues) {
+				const { error } = await authClient.signUp.email({
+					name: `${formValues.firstName} ${formValues.lastName}`,
+					...formValues,
+				});
+
+				if (error) {
+					alert({ error });
+					return;
+				}
+
+				console.log();
+			},
+		},
+		submitConfig: {
+			action: "/sing-in",
+			method: "POST",
+		},
+		defaultValues: {
+			password: "admin123",
+			email: "admin@example.com",
+			// birthday,
+			// firstName,
+			// lastName,
+			// phone,
+		},
+	});
+
+	// const serverAction = useActionData<typeof action>();
 
 	return (
-		<div className="flex  flex-1 flex-col justify-center px-6 py-12 lg:px-8 h-dvh">
-			<div className="sm:mx-auto sm:w-full sm:max-w-sm">
-				<img
-					alt="Your Company"
-					src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
-					className="mx-auto h-10 w-auto"
-				/>
-				<h2 className="dark:text-gray-200 mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-					Sign up to your account
-				</h2>
+		<div className="flex min-h-svh w-full items-center justify-center p-6 md:p-6">
+			<ThemeToggle className="absolute top-4 right-4" />
+			<div className="w-full max-w-sm">
+				<Popover>
+					<PopoverTrigger>Open</PopoverTrigger>
+					<PopoverContent>Place content for the popover here.</PopoverContent>
+				</Popover>
+
+				<Card className="mx-auto max-w-sm rounded-xl">
+					<CardHeader className="pb-0">
+						<CardTitle className="text-2xl">Register</CardTitle>
+						<CardDescription>
+							Create a new account by filling out the form below.
+						</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<FormProvider {...form}>
+							<Form
+								action="/sing-up"
+								method="POST"
+								onSubmit={form.handleSubmit}
+								className="space-y-4"
+							>
+								<FormField
+									name="email"
+									control={form.control}
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>
+												<Label className="capitalize" htmlFor={field.name}>
+													email
+												</Label>
+											</FormLabel>
+											<FormControl>
+												<Input {...field} type="email" required />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+
+								<FormField
+									name="password"
+									control={form.control}
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>
+												<Label className="capitalize" htmlFor={field.name}>
+													Password
+												</Label>
+											</FormLabel>
+											<FormControl>
+												<Input {...field} type="password" required />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+
+								<FormField
+									name="firstName"
+									control={form.control}
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>
+												<Label className="capitalize" htmlFor={field.name}>
+													first name
+												</Label>
+											</FormLabel>
+											<FormControl>
+												<Input {...field} type="text" required />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+
+								<FormField
+									name="lastName"
+									control={form.control}
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>
+												<Label className="capitalize" htmlFor={field.name}>
+													last name
+												</Label>
+											</FormLabel>
+											<FormControl>
+												<Input {...field} type="text" required />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+
+								<FormField
+									control={form.control}
+									name="phone"
+									render={({ field }) => (
+										<FormItem className="flex flex-col items-start">
+											<FormLabel className="capitalize" htmlFor={field.name}>
+												Phone Number
+											</FormLabel>
+											<FormControl className="w-full">
+												<PhoneInput
+													className="text-white"
+													placeholder="Enter a phone number"
+													type="tel"
+													{...field}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</Form>
+						</FormProvider>
+					</CardContent>
+				</Card>
 			</div>
-			{serverAction?.authError?.message}
-			<Form method="post" className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
-				{serverAction?.authError ? (
-					<div className="rounded-md bg-yellow-50 p-4">
-						<div className="flex">
-							<div className="shrink-0">
-								<ExclamationTriangleIcon
-									aria-hidden="true"
-									className="size-5 text-yellow-400"
-								/>
-							</div>
-							<div className="ml-3">
-								<h3 className="text-sm font-medium text-yellow-800">
-									{serverAction?.authError}
-								</h3>
-							</div>
-						</div>
-					</div>
-				) : null}
-				<div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-6">
-					<div className="col-span-full">
-						<label
-							htmlFor="email"
-							className=" dark:text-gray-200 odd:block text-sm font-medium leading-6 text-gray-900 capitalize"
-						>
-							name
-						</label>
-						<div className="relative mt-2 rounded-md shadow-sm">
-							<div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-								<UsersIcon
-									aria-hidden="true"
-									className="h-5 w-5 text-gray-400"
-								/>
-							</div>
-							<input
-								id="name"
-								name="name"
-								type="name"
-								aria-invalid="true"
-								aria-describedby="name-error"
-								defaultValue={"name awasome"}
-								placeholder="name"
-								className="block w-full rounded-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-							/>
-							{serverAction?.formError?.name ? (
-								<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-									<ExclamationCircleIcon
-										aria-hidden="true"
-										className="h-5 w-5 text-red-500"
-									/>
-								</div>
-							) : null}
-						</div>
-						{serverAction?.formError?.name ? (
-							<p id="email-error" className="mt-2 text-sm text-red-600">
-								{serverAction?.formError?.name}
-							</p>
-						) : null}
-					</div>
-
-					<div className="col-span-full">
-						<label
-							htmlFor="email"
-							className="dark:text-gray-200 block text-sm font-medium leading-6 text-gray-900"
-						>
-							Email
-						</label>
-						<div className="relative mt-2 rounded-md shadow-sm">
-							<div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-								<EnvelopeIcon
-									aria-hidden="true"
-									className="h-5 w-5 text-gray-400"
-								/>
-							</div>
-							<input
-								id="email"
-								name="email"
-								type="email"
-								aria-invalid="true"
-								aria-describedby="email-error"
-								placeholder="you@example.com"
-								defaultValue={"you@example.com"}
-								className="block w-full rounded-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-							/>
-							{serverAction?.formError?.email ? (
-								<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-									<ExclamationCircleIcon
-										aria-hidden="true"
-										className="h-5 w-5 text-red-500"
-									/>
-								</div>
-							) : null}
-						</div>
-						{serverAction?.formError?.email ? (
-							<p id="email-error" className="mt-2 text-sm text-red-600">
-								Not a valid email address.
-							</p>
-						) : null}
-					</div>
-
-					<div className="col-span-full">
-						<label
-							htmlFor="email"
-							className="dark:text-gray-200 block text-sm font-medium leading-6 text-gray-900 capitalize"
-						>
-							password
-						</label>
-						<div className="relative mt-2 rounded-md shadow-sm">
-							<div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-								<EnvelopeIcon
-									aria-hidden="true"
-									className="h-5 w-5 text-gray-400"
-								/>
-							</div>
-							<input
-								id="password"
-								name="password"
-								type="password"
-								aria-invalid="true"
-								aria-describedby="password-error"
-								placeholder="*********"
-								defaultValue={"123321321"}
-								className="block w-full rounded-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-							/>
-
-							{serverAction?.formError?.password ? (
-								<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-									<ExclamationCircleIcon
-										aria-hidden="true"
-										className="h-5 w-5 text-red-500"
-									/>
-								</div>
-							) : null}
-						</div>
-						<p id="email-error" className="mt-2 text-sm text-red-600">
-							{serverAction?.formError?.password}
-						</p>
-					</div>
-
-					{/* 
-					<div className="col-span-full sm:col-span-2">
-						<label
-							htmlFor="email"
-							className="block text-sm font-medium leading-6 text-gray-900"
-						>
-							Email
-						</label>
-						<div className="mt-2">
-							<input
-								id="email"
-								name="email"
-								type="email"
-								placeholder="you@example.com"
-								className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-							/>
-						</div>
-					</div>  */}
-				</div>
-
-				<div className="my-4">
-					<div className="relative">
-						<div
-							aria-hidden="true"
-							className="absolute inset-0 flex items-center"
-						>
-							<div className="w-full border-t border-gray-300" />
-						</div>
-						<div className="relative flex justify-center" />
-					</div>
-				</div>
-
-				<div className="flex items-center justify-end space-x-4">
-					<div>
-						<button
-							type="submit"
-							className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-						>
-							Cancel
-						</button>
-					</div>
-					<div>
-						<button
-							type="submit"
-							className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-						>
-							Submit
-						</button>
-					</div>
-				</div>
-			</Form>
 		</div>
 	);
 }
+
+/* 
+<FormField
+									control={form.control}
+									name="birthday"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>
+												<Label htmlFor={field.name}>Password</Label>
+											</FormLabel>
+											<Popover>
+												<PopoverTrigger asChild>
+													<FormControl>
+														<Button
+															variant={"outline"}
+															className={cn(
+																"w-[240px] pl-3 text-left font-normal",
+																!field.value && "text-muted-foreground",
+															)}
+														>
+															{field.value ? (
+																format(field.value, "PPP")
+															) : (
+																<span>Pick a date</span>
+															)}
+															<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+														</Button>
+													</FormControl>
+												</PopoverTrigger>
+												<PopoverContent className="w-auto p-0 bg-current" align="start">
+													<Calendar
+														mode="single"
+														selected={field.value}
+														onSelect={field.onChange}
+														disabled={(date) =>
+															date > new Date() || date < new Date("1900-01-01")
+														}
+														initialFocus
+													/>
+												</PopoverContent>
+											</Popover>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								 */

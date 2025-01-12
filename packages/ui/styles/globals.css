@@ -60,16 +60,16 @@
 		--chart-4: 280 65% 60%;
 		--chart-5: 340 75% 55%;
 	}
+}
 
+@layer base {
 	* {
 		@apply border-border;
 	}
-
 	body {
 		@apply bg-background text-foreground;
 	}
 }
-
 /* Change Autocomplete styles in Chrome */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,

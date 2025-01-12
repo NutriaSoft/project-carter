@@ -5,10 +5,10 @@ import { fontFamily } from "tailwindcss/defaultTheme";
 const config = {
 	darkMode: "selector",
 	content: [
-		"app/**/*.{ts,tsx}",
+		"./app/**/*.{ts,tsx}",
 		"components/**/*.{ts,tsx}",
 		"../../packages/ui/src/components/**/*.{ts,tsx}",
-		"./app/**/{**,.client,.server}/**/*.{js,jsx,ts,tsx}",
+		"./app/**/{**,.client,.server}/**/*.{tsx}",
 	],
 	theme: {
 		extend: {
