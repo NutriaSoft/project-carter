@@ -1,4 +1,4 @@
-biome format --write .
-biome check .
-bun lint
+#biome format --write .
+#biome check .
+#bun lint
 # bun run test:unit

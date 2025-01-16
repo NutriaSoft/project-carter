@@ -1,15 +1,5 @@
-import { faker } from "@faker-js/faker";
-import {
-	CalendarIcon,
-	EnvelopeIcon,
-	ExclamationCircleIcon,
-	ExclamationTriangleIcon,
-	UsersIcon,
-} from "@heroicons/react/20/solid";
+import { CalendarIcon } from "@heroicons/react/20/solid";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { client } from "@package/auth/src/client";
-import { Button } from "@package/ui/components/button";
-import { Calendar } from "@package/ui/components/calendar";
 import {
 	Card,
 	CardContent,
@@ -19,16 +9,18 @@ import {
 } from "@package/ui/components/card";
 import {
 	FormControl,
-	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
 	FormMessage,
+	FormDescription,
 	Form as FormProvider,
 } from "@package/ui/components/form";
 import { Input } from "@package/ui/components/input";
 import { Label } from "@package/ui/components/label";
 import { PhoneInput } from "@package/ui/components/phone-input";
+import { Button } from "@package/ui/components/button";
+import { Calendar } from "@package/ui/components/calendar";
 import {
 	Popover,
 	PopoverContent,
@@ -37,64 +29,61 @@ import {
 import { useRemixForm } from "@package/ui/hooks/use-remix-form";
 import { cn } from "@package/ui/lib/utils";
 import { format } from "date-fns";
-import { Form, useActionData, useFetcher } from "react-router";
+import { Form, useFetcher, Link } from "react-router";
 import type { InferInput } from "valibot";
-import CreateMemberAction from "~/routes/dashboard/teams/members/create/create-member.action";
-import { CreateProfileMemberSchema } from "~/routes/dashboard/teams/members/create/create-profile-member.schema";
 import { authClient } from "~/utils/better-auth.client";
 import { ThemeToggle } from "./theme-toogle.component";
 
-export const action = CreateMemberAction;
+import SingUpAction from "./sing-up.action";
+
+import { SingUpSchema } from "./sing-up.schema";
+
+export const action = SingUpAction;
 
 export default function SingUp() {
-	const fetcher = useFetcher();
-	const form = useRemixForm<InferInput<typeof CreateProfileMemberSchema>>({
-		fetcher,
+	// const fetcher = useFetcher();
+	const form = useRemixForm<InferInput<typeof SingUpSchema>>({
+		// fetcher,
 		mode: "onSubmit",
 		stringifyAllValues: false,
-		resolver: valibotResolver(CreateProfileMemberSchema),
+		resolver: valibotResolver(SingUpSchema),
 		submitHandlers: {
 			async onValid(formValues) {
-				const { error } = await authClient.signUp.email({
-					name: `${formValues.firstName} ${formValues.lastName}`,
-					...formValues,
-				});
+				console.log(formValues);
 
-				if (error) {
-					alert({ error });
-					return;
-				}
+				// const { data, error } = await authClient.signUp.email({
+				// 	name: `${formValues.firstName} ${formValues.lastName}`,
+				// 	...formValues,
+				// });
 
-				console.log();
+				// if (error) {
+				// 	alert({ error });
+				// 	return;
+				// }
+
+				// console.log(data);
 			},
 		},
 		submitConfig: {
-			action: "/sing-in",
+			action: "/sing-up",
 			method: "POST",
 		},
 		defaultValues: {
-			password: "admin123",
-			email: "admin@example.com",
-			// birthday,
-			// firstName,
-			// lastName,
-			// phone,
+			password: "0123456789",
+			email: "user@example.com",
+			// birthday: new Date("2000-01-01"),
+			firstName: "first name",
+			lastName: "last name",
+			phone: "+593987469359",
 		},
 	});
-
-	// const serverAction = useActionData<typeof action>();
 
 	return (
 		<div className="flex min-h-svh w-full items-center justify-center p-6 md:p-6">
 			<ThemeToggle className="absolute top-4 right-4" />
 			<div className="w-full max-w-sm">
-				<Popover>
-					<PopoverTrigger>Open</PopoverTrigger>
-					<PopoverContent>Place content for the popover here.</PopoverContent>
-				</Popover>
-
-				<Card className="mx-auto max-w-sm rounded-xl">
-					<CardHeader className="pb-0">
+				<Card className="mx-auto max-w-sm">
+					<CardHeader>
 						<CardTitle className="text-2xl">Register</CardTitle>
 						<CardDescription>
 							Create a new account by filling out the form below.
@@ -103,60 +92,28 @@ export default function SingUp() {
 					<CardContent>
 						<FormProvider {...form}>
 							<Form
-								action="/sing-up"
 								method="POST"
-								onSubmit={form.handleSubmit}
-								className="space-y-4"
+								// onSubmit={form.handleSubmit}
+								className="space-y-4 flex flex-col items-start"
 							>
-								<FormField
-									name="email"
-									control={form.control}
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>
-												<Label className="capitalize" htmlFor={field.name}>
-													email
-												</Label>
-											</FormLabel>
-											<FormControl>
-												<Input {...field} type="email" required />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-
-								<FormField
-									name="password"
-									control={form.control}
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>
-												<Label className="capitalize" htmlFor={field.name}>
-													Password
-												</Label>
-											</FormLabel>
-											<FormControl>
-												<Input {...field} type="password" required />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
+								<button type="submit">SUMBIT</button>
 
 								<FormField
 									name="firstName"
 									control={form.control}
 									render={({ field }) => (
-										<FormItem>
+										<FormItem className="flex flex-col items-start w-full">
 											<FormLabel>
 												<Label className="capitalize" htmlFor={field.name}>
 													first name
 												</Label>
 											</FormLabel>
-											<FormControl>
+											<FormControl className="w-full">
 												<Input {...field} type="text" required />
 											</FormControl>
+											<FormDescription className="text-left">
+												Enter your first name
+											</FormDescription>
 											<FormMessage />
 										</FormItem>
 									)}
@@ -166,15 +123,60 @@ export default function SingUp() {
 									name="lastName"
 									control={form.control}
 									render={({ field }) => (
-										<FormItem>
+										<FormItem className="flex flex-col items-start w-full">
 											<FormLabel>
 												<Label className="capitalize" htmlFor={field.name}>
 													last name
 												</Label>
 											</FormLabel>
-											<FormControl>
+											<FormControl className="w-full">
 												<Input {...field} type="text" required />
 											</FormControl>
+											<FormDescription className="text-left">
+												Enter your last name
+											</FormDescription>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+
+								<FormField
+									name="email"
+									control={form.control}
+									render={({ field }) => (
+										<FormItem className="flex flex-col items-start w-full">
+											<FormLabel>
+												<Label className="capitalize" htmlFor={field.name}>
+													email
+												</Label>
+											</FormLabel>
+											<FormControl className="w-full">
+												<Input {...field} type="email" required />
+											</FormControl>
+											<FormDescription className="text-left">
+												Enter your email address
+											</FormDescription>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+
+								<FormField
+									name="password"
+									control={form.control}
+									render={({ field }) => (
+										<FormItem className="flex flex-col items-start w-full">
+											<FormLabel>
+												<Label className="capitalize" htmlFor={field.name}>
+													Password
+												</Label>
+											</FormLabel>
+											<FormControl className="w-full">
+												<Input {...field} type="password" required />
+											</FormControl>
+											<FormDescription className="text-left">
+												Enter your security password
+											</FormDescription>
 											<FormMessage />
 										</FormItem>
 									)}
@@ -184,47 +186,39 @@ export default function SingUp() {
 									control={form.control}
 									name="phone"
 									render={({ field }) => (
-										<FormItem className="flex flex-col items-start">
-											<FormLabel className="capitalize" htmlFor={field.name}>
-												Phone Number
-											</FormLabel>
-											<FormControl className="w-full">
+										<FormItem className="flex flex-col items-start w-full">
+											<FormLabel className="text-left">Phone Number</FormLabel>
+											<FormControl>
 												<PhoneInput
-													className="text-white"
+													className="w-full"
 													placeholder="Enter a phone number"
-													type="tel"
 													{...field}
 												/>
 											</FormControl>
+											<FormDescription className="text-left">
+												Enter a phone number
+											</FormDescription>
 											<FormMessage />
 										</FormItem>
 									)}
 								/>
-							</Form>
-						</FormProvider>
-					</CardContent>
-				</Card>
-			</div>
-		</div>
-	);
-}
 
-/* 
-<FormField
+								<FormField
 									control={form.control}
 									name="birthday"
 									render={({ field }) => (
-										<FormItem>
+										<FormItem className="flex flex-col items-start w-full">
 											<FormLabel>
-												<Label htmlFor={field.name}>Password</Label>
+												<Label htmlFor={field.name}>Birthday</Label>
 											</FormLabel>
 											<Popover>
 												<PopoverTrigger asChild>
 													<FormControl>
 														<Button
+															type="button"
 															variant={"outline"}
 															className={cn(
-																"w-[240px] pl-3 text-left font-normal",
+																"w-full pl-3 text-left font-normal",
 																!field.value && "text-muted-foreground",
 															)}
 														>
@@ -237,7 +231,7 @@ export default function SingUp() {
 														</Button>
 													</FormControl>
 												</PopoverTrigger>
-												<PopoverContent className="w-auto p-0 bg-current" align="start">
+												<PopoverContent className="w-auto p-0 " align="start">
 													<Calendar
 														mode="single"
 														selected={field.value}
@@ -250,7 +244,37 @@ export default function SingUp() {
 												</PopoverContent>
 											</Popover>
 											<FormMessage />
+											<FormDescription className="text-left">
+												Pick your birthday date
+											</FormDescription>
 										</FormItem>
 									)}
 								/>
-								 */
+								<Button type="submit" className="w-full">
+									Login
+								</Button>
+								<Button variant="outline" className="w-full">
+									Login with Google
+								</Button>
+								<div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary  ">
+									By clicking continue, you agree to our{" "}
+									<Link to="#">Terms of Service</Link> and{" "}
+									<Link to="#">Privacy Policy</Link>.
+								</div>
+								<div className="mt-4 mx-auto text-center text-sm">
+									Don&apos;t have an account?{" "}
+									<Link to="/sing-up" className="underline underline-offset-4">
+										Sign up
+									</Link>
+								</div>
+							</Form>
+						</FormProvider>
+					</CardContent>
+				</Card>
+			</div>
+		</div>
+	);
+}
+
+/*
+ */

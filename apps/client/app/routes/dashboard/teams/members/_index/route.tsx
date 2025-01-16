@@ -1,26 +1,24 @@
 import { EnvelopeIcon, PhoneIcon } from "@heroicons/react/20/solid";
-import type { authClient } from "@package/auth";
+// import type { authClient } from "@package/auth";
 import type { LoaderFunctionArgs } from "react-router";
 import { useLoaderData } from "react-router";
-import { authServer } from "~/utils/auh-server.server";
+// import { authServer } from "~/utils/auh-server.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-	try {
-		const requestClone = request.clone();
-
-		const result: Awaited<
-			ReturnType<typeof authClient.admin.listUsers<never>>
-		> = await authServer
-			.headers(requestClone.headers)
-			.get("/admin/list-users")
-			.json();
-
-		console.log(result);
-		return result;
-	} catch (error) {
-		console.log(error);
-		return null;
-	}
+	// try {
+	// 	const requestClone = request.clone();
+	// 	const result: Awaited<
+	// 		ReturnType<typeof authClient.admin.listUsers<never>>
+	// 	> = await authServer
+	// 		.headers(requestClone.headers)
+	// 		.get("/admin/list-users")
+	// 		.json();
+	// 	console.log(result);
+	// 	return result;
+	// } catch (error) {
+	// 	console.log(error);
+	// 	return null;
+	// }
 }
 
 export default function Index() {

@@ -1,4 +1,4 @@
-import type { auth } from "@package/auth";
+import type { auth } from "@package/auth/src/server";
 
 // user info view
 export const AuthUserInfo = (

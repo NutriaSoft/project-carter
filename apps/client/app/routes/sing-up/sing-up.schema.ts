@@ -9,11 +9,7 @@ import {
 	string,
 } from "valibot";
 
-export const CreateProfileMemberSchema = object({
-	role: pipe(
-		string("Your role must be a string."),
-		nonEmpty("Please enter your role."),
-	),
+export const SingUpSchema = object({
 	phone: pipe(
 		string("Your name must be a string."),
 		nonEmpty("Please enter your name."),
@@ -27,8 +23,8 @@ export const CreateProfileMemberSchema = object({
 		nonEmpty("Please enter your name."),
 	),
 	birthday: pipe(
-		date("Your birthday must be a string."),
-		maxValue(new Date(2020, 0, 1)),
+		string("Your birthday must be a string."),
+		nonEmpty("Please enter your name."),
 	),
 	email: pipe(
 		string("Your email must be a string."),

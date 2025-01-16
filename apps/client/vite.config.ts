@@ -4,6 +4,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
 	optimizeDeps: {
+		include: ["../../packages/ui"],
 		force: false, // Fuerza la reoptimización de dependencias
 	},
 

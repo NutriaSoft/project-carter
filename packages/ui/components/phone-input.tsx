@@ -1,5 +1,5 @@
-import { CheckIcon, ChevronsUpDown } from "lucide-react";
 import * as React from "react";
+import { CheckIcon, ChevronsUpDown } from "lucide-react";
 import * as RPNInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 
@@ -21,7 +21,54 @@ import {
 import { ScrollArea } from "@package/ui/components/scroll-area";
 import { cn } from "@package/ui/lib/utils";
 
-/////////////////////////////////////////////////////
+type PhoneInputProps = Omit<
+	React.ComponentProps<"input">,
+	"onChange" | "value" | "ref"
+> &
+	Omit<RPNInput.Props<typeof RPNInput.default>, "onChange"> & {
+		onChange?: (value: RPNInput.Value) => void;
+	};
+
+const PhoneInput: React.ForwardRefExoticComponent<PhoneInputProps> =
+	React.forwardRef<React.ElementRef<typeof RPNInput.default>, PhoneInputProps>(
+		({ className, onChange, ...props }, ref) => {
+			return (
+				<RPNInput.default
+					ref={ref}
+					className={cn("flex", className)}
+					flagComponent={FlagComponent}
+					countrySelectComponent={CountrySelect}
+					inputComponent={InputComponent}
+					smartCaret={false}
+					/**
+					 * Handles the onChange event.
+					 *
+					 * react-phone-number-input might trigger the onChange event as undefined
+					 * when a valid phone number is not entered. To prevent this,
+					 * the value is coerced to an empty string.
+					 *
+					 * @param {E164Number | undefined} value - The entered value
+					 */
+					onChange={(value) => onChange?.(value || ("" as RPNInput.Value))}
+					{...props}
+				/>
+			);
+		},
+	);
+PhoneInput.displayName = "PhoneInput";
+
+const InputComponent = React.forwardRef<
+	HTMLInputElement,
+	React.ComponentProps<"input">
+>(({ className, ...props }, ref) => (
+	<Input
+		className={cn("rounded-e-lg rounded-s-none", className)}
+		{...props}
+		ref={ref}
+	/>
+));
+InputComponent.displayName = "InputComponent";
+
 type CountryEntry = { label: string; value: RPNInput.Country | undefined };
 
 type CountrySelectProps = {
@@ -42,6 +89,7 @@ const CountrySelect = ({
 			<PopoverTrigger asChild>
 				<Button
 					type="button"
+					size="sm"
 					variant="outline"
 					className="flex gap-1 rounded-e-none rounded-s-lg border-r-0 px-3 focus:z-10"
 					disabled={disabled}
@@ -84,56 +132,6 @@ const CountrySelect = ({
 		</Popover>
 	);
 };
-/////////////////////////////////////////////////////
-const InputComponent = React.forwardRef<
-	HTMLInputElement,
-	React.ComponentProps<"input">
->(({ className, ...props }, ref) => (
-	<Input
-		className={cn("rounded-e-lg rounded-s-none", className)}
-		ref={ref}
-		{...props}
-	/>
-));
-
-InputComponent.displayName = "InputComponent";
-/////////////////////////////////////////////////////
-type PhoneInputProps = Omit<
-	React.ComponentProps<"input">,
-	"onChange" | "value" | "ref"
-> &
-	Omit<RPNInput.Props<typeof RPNInput.default>, "onChange"> & {
-		onChange?: (value: RPNInput.Value) => void;
-	};
-
-const PhoneInput: React.ForwardRefExoticComponent<PhoneInputProps> =
-	React.forwardRef<React.ElementRef<typeof RPNInput.default>, PhoneInputProps>(
-		({ className, onChange, ...props }, ref) => {
-			return (
-				<RPNInput.default
-					ref={ref}
-					className={cn("flex", className)}
-					flagComponent={FlagComponent}
-					countrySelectComponent={CountrySelect}
-					inputComponent={InputComponent}
-					smartCaret={false}
-					/**
-					 * Handles the onChange event.
-					 *
-					 * react-phone-number-input might trigger the onChange event as undefined
-					 * when a valid phone number is not entered. To prevent this,
-					 * the value is coerced to an empty string.
-					 *
-					 * @param {E164Number | undefined} value - The entered value
-					 */
-					onChange={(value) => onChange?.(value || ("" as RPNInput.Value))}
-					{...props}
-				/>
-			);
-		},
-	);
-PhoneInput.displayName = "PhoneInput";
-/////////////////////////////////////////////////////
 
 interface CountrySelectOptionProps extends RPNInput.FlagProps {
 	selectedCountry: RPNInput.Country;
@@ -162,9 +160,9 @@ const FlagComponent = ({ country, countryName }: RPNInput.FlagProps) => {
 	const Flag = flags[country];
 
 	return (
-		<span className="flex h-4 w-6 overflow-hidden rounded-sm bg-foreground/20 [&_svg]:size-full">
+		<section className="flex h-4 w-6 overflow-hidden rounded-sm bg-foreground/20 [&_svg]:size-full">
 			{Flag && <Flag title={countryName} />}
-		</span>
+		</section>
 	);
 };
 

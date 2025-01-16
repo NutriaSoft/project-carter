@@ -4,7 +4,7 @@ import styles from "@package/ui/styles/globals.css?url";
 
 export const RootLinks: LinksFunction = () => {
 	return [
-		{ rel: "stylesheet", href: styles },
+		{ rel: "stylesheet", href: styles, type: "text/css" },
 		{ rel: "preconnect", href: "https://fonts.googleapis.com" },
 		{
 			rel: "preconnect",
