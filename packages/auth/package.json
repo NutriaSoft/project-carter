@@ -18,12 +18,12 @@
 	},
 
 	"scripts": {
-		"prepare:prisma": "if [ ! -d \"prisma\" ]; then bunx prisma init; fi",
+		"prepare:prisma": "if [ ! -d \"prisma\" ]; then bunx prisma init --datasource-provider sqlite; fi",
 		"prisma:format": "bunx prisma format",
 		"prisma:generate": "bunx prisma generate",
 		"prisma:push": "bunx prisma db push",
 		"prisma:pull": "bunx prisma db pull",
 		"auth:generate": "bunx @better-auth/cli generate --config ./src/server.ts --y",
-		"postinstall": "bun run prepare:prisma && bun run prisma:format && bun run prisma:generate && bun run auth:generate && bun run prisma:push && bun run prisma:pull"
+		"postinstall": "bun run prepare:prisma && bun run auth:generate && bun run prisma:generate && bun run prisma:push && bun run prisma:pull"
 	}
 }

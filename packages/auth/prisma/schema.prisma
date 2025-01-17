@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -19,11 +19,10 @@ model User {
   banned        Boolean?
   banReason     String?
   banExpires    DateTime?
-  age           Int?
   lastName      String
-  firstName     String
+  firstName     String?
   phone         String
-  birthday      Int?
+  birthday      DateTime?
   accounts      Account[]
   invitations   Invitation[]
   members       Member[]
@@ -97,8 +96,8 @@ model Member {
   userId         String
   role           String
   createdAt      DateTime
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@map("member")
 }
@@ -111,8 +110,8 @@ model Invitation {
   status         String
   expiresAt      DateTime
   inviterId      String
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   user           User         @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@map("invitation")
 }

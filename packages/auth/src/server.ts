@@ -21,14 +21,14 @@ export const server = betterAuth({
 			},
 			firstName: {
 				type: "string",
-				required: true,
+				requirbuned: true,
 			},
 			phone: {
 				type: "string",
 				required: true,
 			},
 			birthday: {
-				type: "number",
+				type: "date",
 				required: false,
 			},
 		},
