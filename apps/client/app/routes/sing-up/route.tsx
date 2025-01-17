@@ -1,5 +1,7 @@
 import { CalendarIcon } from "@heroicons/react/20/solid";
 import { valibotResolver } from "@hookform/resolvers/valibot";
+import { Button } from "@package/ui/components/button";
+import { Calendar } from "@package/ui/components/calendar";
 import {
 	Card,
 	CardContent,
@@ -9,18 +11,16 @@ import {
 } from "@package/ui/components/card";
 import {
 	FormControl,
+	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
 	FormMessage,
-	FormDescription,
 	Form as FormProvider,
 } from "@package/ui/components/form";
 import { Input } from "@package/ui/components/input";
 import { Label } from "@package/ui/components/label";
 import { PhoneInput } from "@package/ui/components/phone-input";
-import { Button } from "@package/ui/components/button";
-import { Calendar } from "@package/ui/components/calendar";
 import {
 	Popover,
 	PopoverContent,
@@ -29,13 +29,14 @@ import {
 import { useRemixForm } from "@package/ui/hooks/use-remix-form";
 import { cn } from "@package/ui/lib/utils";
 import { format } from "date-fns";
-import { Form, useFetcher, Link } from "react-router";
+import { Form, Link, useFetcher } from "react-router";
 import type { InferInput } from "valibot";
 import { authClient } from "~/utils/better-auth.client";
 import { ThemeToggle } from "./theme-toogle.component";
 
 import SingUpAction from "./sing-up.action";
 
+import { useEffect } from "react";
 import { SingUpSchema } from "./sing-up.schema";
 
 export const action = SingUpAction;
@@ -49,7 +50,7 @@ export default function SingUp() {
 		resolver: valibotResolver(SingUpSchema),
 		submitHandlers: {
 			async onValid(formValues) {
-				console.log(formValues);
+				console.log("VALUES",formValues);
 
 				// const { data, error } = await authClient.signUp.email({
 				// 	name: `${formValues.firstName} ${formValues.lastName}`,
@@ -71,7 +72,7 @@ export default function SingUp() {
 		defaultValues: {
 			password: "0123456789",
 			email: "user@example.com",
-			// birthday: new Date("2000-01-01"),
+			birthday: new Date("2000-05-04"),
 			firstName: "first name",
 			lastName: "last name",
 			phone: "+593987469359",
@@ -93,7 +94,7 @@ export default function SingUp() {
 						<FormProvider {...form}>
 							<Form
 								method="POST"
-								// onSubmit={form.handleSubmit}
+								onSubmit={form.handleSubmit}
 								className="space-y-4 flex flex-col items-start"
 							>
 								<button type="submit">SUMBIT</button>
@@ -234,6 +235,7 @@ export default function SingUp() {
 												<PopoverContent className="w-auto p-0 " align="start">
 													<Calendar
 														mode="single"
+														captionLayout="dropdown"
 														selected={field.value}
 														onSelect={field.onChange}
 														disabled={(date) =>

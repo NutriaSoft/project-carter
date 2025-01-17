@@ -5,9 +5,12 @@ import type { Route } from "./+types/route";
 import { SingUpSchema } from "./sing-up.schema";
 
 export default async function SingUpAction({ request }: Route.ActionArgs) {
+	console.log(await request.clone().formData());
+	
 	const { errors, data, receivedValues } = await getValidatedFormData<
 		InferInput<typeof SingUpSchema>
 	>(request, valibotResolver(SingUpSchema), true);
+
 
 	if (errors) {
 		console.error("ACTION ERROR", { errors, receivedValues });

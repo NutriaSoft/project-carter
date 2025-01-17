@@ -1,8 +1,10 @@
+import { subYears } from "date-fns";
 import {
 	date,
 	email,
 	maxValue,
 	minLength,
+	minValue,
 	nonEmpty,
 	object,
 	pipe,
@@ -23,8 +25,9 @@ export const SingUpSchema = object({
 		nonEmpty("Please enter your name."),
 	),
 	birthday: pipe(
-		string("Your birthday must be a string."),
-		nonEmpty("Please enter your name."),
+		date("Your birthday must be a string."),
+		minValue(subYears(new Date(), 75)),
+		maxValue(subYears(new Date(), 18)),
 	),
 	email: pipe(
 		string("Your email must be a string."),
