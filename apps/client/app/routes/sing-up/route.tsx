@@ -1,5 +1,10 @@
-import { CalendarIcon } from "@heroicons/react/20/solid";
+import { CalendarIcon, XCircleIcon } from "@heroicons/react/20/solid";
 import { valibotResolver } from "@hookform/resolvers/valibot";
+import {
+	Alert,
+	AlertDescription,
+	AlertTitle,
+} from "@package/ui/components/alert";
 import { Button } from "@package/ui/components/button";
 import { Calendar } from "@package/ui/components/calendar";
 import {
@@ -26,43 +31,55 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@package/ui/components/popover";
+import { Spinner } from "@package/ui/components/spinner";
 import { useRemixForm } from "@package/ui/hooks/use-remix-form";
 import { cn } from "@package/ui/lib/utils";
 import { format } from "date-fns";
-import { Form, Link, useFetcher } from "react-router";
+import { Form, Link } from "react-router";
 import type { InferInput } from "valibot";
 import { authClient } from "~/utils/better-auth.client";
 import { ThemeToggle } from "./theme-toogle.component";
 
 import SingUpAction from "./sing-up.action";
 
-import { useEffect } from "react";
 import { SingUpSchema } from "./sing-up.schema";
+
+import { useState } from "react";
 
 export const action = SingUpAction;
 
 export default function SingUp() {
-	// const fetcher = useFetcher();
+	const [formDisable, setFormDisable] = useState(false);
+
+	//! HAY QUE REPARAR ESTO PARA QUE USER LA INFERENCIA DE TIPOS DE BETTER-AUTH
+	const [authClientError, setAuthClientError] = useState<{
+		code?: string | undefined;
+		message?: string | undefined;
+		status: number;
+		statusText: string;
+	} | null>(null);
+
 	const form = useRemixForm<InferInput<typeof SingUpSchema>>({
-		// fetcher,
+		disabled: formDisable,
 		mode: "onSubmit",
 		stringifyAllValues: false,
 		resolver: valibotResolver(SingUpSchema),
 		submitHandlers: {
 			async onValid(formValues) {
-				console.log("VALUES",formValues);
+				setFormDisable(true);
+				const { data, error } = await authClient.signUp.email({
+					name: `${formValues.firstName} ${formValues.lastName}`,
+					...formValues,
+				});
 
-				// const { data, error } = await authClient.signUp.email({
-				// 	name: `${formValues.firstName} ${formValues.lastName}`,
-				// 	...formValues,
-				// });
+				if (error) {
+					setAuthClientError(error);
+					setFormDisable(false);
+					console.error(error);
+					return;
+				}
 
-				// if (error) {
-				// 	alert({ error });
-				// 	return;
-				// }
-
-				// console.log(data);
+				console.log(data);
 			},
 		},
 		submitConfig: {
@@ -82,7 +99,7 @@ export default function SingUp() {
 	return (
 		<div className="flex min-h-svh w-full items-center justify-center p-6 md:p-6">
 			<ThemeToggle className="absolute top-4 right-4" />
-			<div className="w-full max-w-sm">
+			<div className="w-full ">
 				<Card className="mx-auto max-w-sm">
 					<CardHeader>
 						<CardTitle className="text-2xl">Register</CardTitle>
@@ -90,6 +107,7 @@ export default function SingUp() {
 							Create a new account by filling out the form below.
 						</CardDescription>
 					</CardHeader>
+
 					<CardContent>
 						<FormProvider {...form}>
 							<Form
@@ -97,7 +115,16 @@ export default function SingUp() {
 								onSubmit={form.handleSubmit}
 								className="space-y-4 flex flex-col items-start"
 							>
-								<button type="submit">SUMBIT</button>
+								{authClientError && (
+									<Alert variant="destructive">
+										<XCircleIcon className="h-4 w-4" />
+										<AlertTitle>Error</AlertTitle>
+										<AlertDescription>
+											{authClientError.statusText ??
+												"we cannot establish connection.\n Please log in again."}
+										</AlertDescription>
+									</Alert>
+								)}
 
 								<FormField
 									name="firstName"
@@ -253,7 +280,7 @@ export default function SingUp() {
 									)}
 								/>
 								<Button type="submit" className="w-full">
-									Login
+									{formDisable ? <Spinner className="invert" /> : "Login"}
 								</Button>
 								<Button variant="outline" className="w-full">
 									Login with Google
