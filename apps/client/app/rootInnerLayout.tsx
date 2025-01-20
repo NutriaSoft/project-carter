@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Links, Meta, Scripts, ScrollRestoration } from "react-router";
 import { PreventFlashOnWrongTheme, useTheme } from "remix-themes";
+import { Toaster } from "@package/ui/components/sonner"
 
 export interface InnerLayoutProps {
 	children: ReactNode;
@@ -23,6 +24,7 @@ export function RootInnerLayout({ children, ssrTheme }: InnerLayoutProps) {
 			</head>
 			<body suppressHydrationWarning>
 				{children}
+				<Toaster/>
 				<ScrollRestoration />
 				<PreventFlashOnWrongTheme ssrTheme={ssrTheme} />
 				<Scripts />

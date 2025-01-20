@@ -1,12 +1,8 @@
 import { CalendarIcon, XCircleIcon } from "@heroicons/react/20/solid";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import {
-	Alert,
-	AlertDescription,
-	AlertTitle,
-} from "@package/ui/components/alert";
 import { Button } from "@package/ui/components/button";
 import { Calendar } from "@package/ui/components/calendar";
+import { Alert, AlertDescription, AlertTitle } from "@package/ui/components/alert";
 import {
 	Card,
 	CardContent,
@@ -35,11 +31,11 @@ import { Spinner } from "@package/ui/components/spinner";
 import { useRemixForm } from "@package/ui/hooks/use-remix-form";
 import { cn } from "@package/ui/lib/utils";
 import { format } from "date-fns";
-import { Form, Link } from "react-router";
+import { Form, Link, useNavigate } from "react-router";
 import type { InferInput } from "valibot";
 import { authClient } from "~/utils/better-auth.client";
 import { ThemeToggle } from "./theme-toogle.component";
-
+import { toast } from "sonner";
 import SingUpAction from "./sing-up.action";
 
 import { SingUpSchema } from "./sing-up.schema";
@@ -49,15 +45,10 @@ import { useState } from "react";
 export const action = SingUpAction;
 
 export default function SingUp() {
-	const [formDisable, setFormDisable] = useState(false);
 
-	//! HAY QUE REPARAR ESTO PARA QUE USER LA INFERENCIA DE TIPOS DE BETTER-AUTH
-	const [authClientError, setAuthClientError] = useState<{
-		code?: string | undefined;
-		message?: string | undefined;
-		status: number;
-		statusText: string;
-	} | null>(null);
+	const navigate = useNavigate();
+	
+	const [formDisable, setFormDisable] = useState(false);
 
 	const form = useRemixForm<InferInput<typeof SingUpSchema>>({
 		disabled: formDisable,
@@ -65,21 +56,28 @@ export default function SingUp() {
 		stringifyAllValues: false,
 		resolver: valibotResolver(SingUpSchema),
 		submitHandlers: {
-			async onValid(formValues) {
+			onValid(formValues) {
 				setFormDisable(true);
-				const { data, error } = await authClient.signUp.email({
-					name: `${formValues.firstName} ${formValues.lastName}`,
-					...formValues,
-				});
-
-				if (error) {
-					setAuthClientError(error);
-					setFormDisable(false);
-					console.error(error);
-					return;
-				}
-
-				console.log(data);
+				toast.promise(
+					new Promise((resolve, errResolver) => {
+						setTimeout(async () => {
+							const { data, error } = await authClient.signUp.email({
+								name: `${formValues.firstName} ${formValues.lastName}`,
+								...formValues,
+							});
+							error ? errResolver(error) : resolve(data);
+						}, 2000);
+					}),
+					{
+						loading: "Loading...",
+						success: (res) => {
+							navigate("./success");
+							return `${JSON.stringify(res)} toast has been added`
+						},
+						error: (error) => `${error.message}`,
+						finally: () => setFormDisable(false),
+					},
+				);
 			},
 		},
 		submitConfig: {
@@ -98,7 +96,7 @@ export default function SingUp() {
 
 	return (
 		<div className="flex min-h-svh w-full items-center justify-center p-6 md:p-6">
-			<ThemeToggle className="absolute top-4 right-4" />
+			<ThemeToggle className="fixed top-4 right-4" />
 			<div className="w-full ">
 				<Card className="mx-auto max-w-sm">
 					<CardHeader>
@@ -115,16 +113,15 @@ export default function SingUp() {
 								onSubmit={form.handleSubmit}
 								className="space-y-4 flex flex-col items-start"
 							>
-								{authClientError && (
+								{/* {authClientError && (
 									<Alert variant="destructive">
 										<XCircleIcon className="h-4 w-4" />
 										<AlertTitle>Error</AlertTitle>
 										<AlertDescription>
-											{authClientError.statusText ??
-												"we cannot establish connection.\n Please log in again."}
+											we cannot establish connection.Please log in again.
 										</AlertDescription>
 									</Alert>
-								)}
+								)} */}
 
 								<FormField
 									name="firstName"
@@ -243,6 +240,7 @@ export default function SingUp() {
 												<PopoverTrigger asChild>
 													<FormControl>
 														<Button
+															disabled={field.disabled}
 															type="button"
 															variant={"outline"}
 															className={cn(
@@ -251,7 +249,7 @@ export default function SingUp() {
 															)}
 														>
 															{field.value ? (
-																format(field.value, "PPP")
+																format(field.value, "dd/MM/yyyy")
 															) : (
 																<span>Pick a date</span>
 															)}
@@ -279,7 +277,7 @@ export default function SingUp() {
 										</FormItem>
 									)}
 								/>
-								<Button type="submit" className="w-full">
+								<Button disabled={formDisable} type="submit" className="w-full">
 									{formDisable ? <Spinner className="invert" /> : "Login"}
 								</Button>
 								<Button variant="outline" className="w-full">
