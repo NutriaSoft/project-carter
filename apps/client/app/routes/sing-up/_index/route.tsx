@@ -41,7 +41,7 @@ import { ThemeToggle } from "./theme-toogle.component";
 import { useState } from "react";
 
 
-const {} : Awaited<ReturnType<typeof authClient.signUp.email<never>>>[""] = {}
+// const {} : Awaited<ReturnType<typeof authClient.signUp.email<never>>>[""] = {}
 
 export const action = SingUpAction;
 

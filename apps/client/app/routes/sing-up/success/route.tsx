@@ -6,6 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@package/ui/components/card";
+import { Link } from "react-router";
 
 export default function SingUpSuccess() {
 	return (
@@ -20,18 +21,11 @@ export default function SingUpSuccess() {
 						</CardDescription>
 					</CardHeader>
 					<CardFooter>
-						<Button className="w-full">Go to Dashboard</Button>
+						<Button asChild className="w-full">
+							<Link to="/dashboard">Go to Dashboard</Link>
+						</Button>
 					</CardFooter>
 				</Card>
-
-				{/* <img
-					alt="Your Company"
-					src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
-					className="mx-auto h-10 w-auto"
-				/>
-				<h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-			
-				</h2> */}
 			</div>
 		</div>
 	);
