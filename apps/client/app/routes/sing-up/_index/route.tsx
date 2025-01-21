@@ -1,6 +1,5 @@
-import { CalendarIcon, XCircleIcon } from "@heroicons/react/20/solid";
+import { CalendarIcon } from "@heroicons/react/20/solid";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { Alert, AlertDescription, AlertTitle } from "@package/ui/components/alert";
 import { Button } from "@package/ui/components/button";
 import { Calendar } from "@package/ui/components/calendar";
 import {
@@ -36,18 +35,19 @@ import { toast } from "sonner";
 import type { InferInput } from "valibot";
 import { authClient } from "~/utils/better-auth.client";
 import SingUpAction from "./action";
+import { SingUpSchema } from "./sing-up.schema";
 import { ThemeToggle } from "./theme-toogle.component";
 
-import { SingUpSchema } from "./sing-up.schema";
-
 import { useState } from "react";
+
+
+const {} : Awaited<ReturnType<typeof authClient.signUp.email<never>>>[""] = {}
 
 export const action = SingUpAction;
 
 export default function SingUp() {
-
 	const navigate = useNavigate();
-	
+
 	const [formDisable, setFormDisable] = useState(false);
 
 	const form = useRemixForm<InferInput<typeof SingUpSchema>>({
@@ -59,22 +59,29 @@ export default function SingUp() {
 			onValid(formValues) {
 				setFormDisable(true);
 				toast.promise(
-					new Promise((resolve, errResolver) => {
-						setTimeout(async () => {
-							const { data, error } = await authClient.signUp.email({
-								name: `${formValues.firstName} ${formValues.lastName}`,
-								...formValues,
-							});
-							error ? errResolver(error): resolve(data);
-						}, 2000);
-					}),
+					new Promise(
+						(
+							resolve: (
+								value: Awaited<
+									ReturnType<typeof authClient.signUp.email<never>>
+								>,
+							) => void,
+							errResolver,
+						) => {
+							setTimeout(async () => {
+								const { data, error } = await authClient.signUp.email({
+									name: `${formValues.firstName} ${formValues.lastName}`,
+									...formValues,
+								});
+								error ? errResolver(error) : resolve(data);
+							}, 2000);
+						},
+					),
 					{
 						loading: "Loading...",
-						success: (res) => {
-							console.log(res);
-							
+						success: ({ user }) => {
 							navigate("./success");
-							return `Created user with email ${res.email}`;
+							return `Created user with email ${user.email}`;
 						},
 						error: (error) => `${error.message}`,
 						finally: () => setFormDisable(false),
