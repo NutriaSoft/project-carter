@@ -21,7 +21,7 @@ export const server = betterAuth({
 			},
 			firstName: {
 				type: "string",
-				requirbuned: true,
+				required: true,
 			},
 			phone: {
 				type: "string",

@@ -1,8 +1,8 @@
 import { CalendarIcon, XCircleIcon } from "@heroicons/react/20/solid";
 import { valibotResolver } from "@hookform/resolvers/valibot";
+import { Alert, AlertDescription, AlertTitle } from "@package/ui/components/alert";
 import { Button } from "@package/ui/components/button";
 import { Calendar } from "@package/ui/components/calendar";
-import { Alert, AlertDescription, AlertTitle } from "@package/ui/components/alert";
 import {
 	Card,
 	CardContent,
@@ -32,11 +32,11 @@ import { useRemixForm } from "@package/ui/hooks/use-remix-form";
 import { cn } from "@package/ui/lib/utils";
 import { format } from "date-fns";
 import { Form, Link, useNavigate } from "react-router";
+import { toast } from "sonner";
 import type { InferInput } from "valibot";
 import { authClient } from "~/utils/better-auth.client";
+import SingUpAction from "./action";
 import { ThemeToggle } from "./theme-toogle.component";
-import { toast } from "sonner";
-import SingUpAction from "./sing-up.action";
 
 import { SingUpSchema } from "./sing-up.schema";
 
@@ -65,14 +65,16 @@ export default function SingUp() {
 								name: `${formValues.firstName} ${formValues.lastName}`,
 								...formValues,
 							});
-							error ? errResolver(error) : resolve(data);
+							error ? errResolver(error): resolve(data);
 						}, 2000);
 					}),
 					{
 						loading: "Loading...",
 						success: (res) => {
+							console.log(res);
+							
 							navigate("./success");
-							return `${JSON.stringify(res)} toast has been added`
+							return `Created user with email ${res.email}`;
 						},
 						error: (error) => `${error.message}`,
 						finally: () => setFormDisable(false),
@@ -278,7 +280,7 @@ export default function SingUp() {
 									)}
 								/>
 								<Button disabled={formDisable} type="submit" className="w-full">
-									{formDisable ? <Spinner className="invert" /> : "Login"}
+									{formDisable ? <Spinner className="invert" /> : "Sing Up"}
 								</Button>
 								<Button variant="outline" className="w-full">
 									Login with Google
