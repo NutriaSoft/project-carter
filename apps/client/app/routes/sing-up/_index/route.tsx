@@ -33,7 +33,7 @@ import { format } from "date-fns";
 import { Form, Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 import type { InferInput } from "valibot";
-import { authClient } from "~/utils/better-auth.client";
+import { signUp } from "~/.client/better-auth";
 import SingUpAction from "./action";
 import { SingUpSchema } from "./sing-up.schema";
 import { ThemeToggle } from "./theme-toogle.component";
@@ -63,13 +63,13 @@ export default function SingUp() {
 						(
 							resolve: (
 								value: Awaited<
-									ReturnType<typeof authClient.signUp.email<never>>
+									ReturnType<typeof signUp.email<never>>
 								>,
 							) => void,
 							errResolver,
 						) => {
 							setTimeout(async () => {
-								const { data, error } = await authClient.signUp.email({
+								const { data, error } = await signUp.email({
 									name: `${formValues.firstName} ${formValues.lastName}`,
 									...formValues,
 								});
@@ -286,6 +286,7 @@ export default function SingUp() {
 										</FormItem>
 									)}
 								/>
+
 								<Button disabled={formDisable} type="submit" className="w-full">
 									{formDisable ? <Spinner className="invert" /> : "Sing Up"}
 								</Button>

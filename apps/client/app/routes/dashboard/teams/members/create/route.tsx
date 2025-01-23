@@ -3,7 +3,7 @@ import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useRemixForm } from "@package/ui/hooks/use-remix-form";
 import { useFetcher } from "react-router";
 import type { InferInput } from "valibot";
-import { authClient } from "~/utils/better-auth.client";
+import { authClient } from "~/.client/better-auth";
 import CreateMemberAction from "./create-member.action";
 import CreateProfileForm from "./create-profile-form";
 import { CreateProfileMemberSchema } from "./create-profile-member.schema";
