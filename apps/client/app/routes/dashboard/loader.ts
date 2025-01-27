@@ -1,17 +1,14 @@
 import cookie from "cookie";
 import { redirect } from "react-router";
-// import { getSessionServer } from "~/utils/session.server";
 import type { Route } from "./+types/_layout";
+import { authClient } from "~/.server/better-auth";
 
 export async function DashboardLoader({ request }: Route.LoaderArgs) {
-	//console.log(request);
-
-	// const { data } = await getSessionServer(request);
-	// if (!data) return redirect("/sing-in");
-	const cookies = cookie.parse(request.headers.get("cookie") ?? "");
-
-	// console.log({ cookies });
-	
-
+	const { headers } = request.clone();
+	const { data, error } = await authClient.getSession({
+		fetchOptions: { headers },
+	});
+	if (!data || error) return redirect("/sing-in");
+	const cookies = cookie.parse(headers.get("cookie") ?? "");
 	return { cookies };
 }

@@ -40,12 +40,12 @@ type SingInError = {
 const toastPromise = ({ email, password }: InferInput<typeof SingInSchema>) => {
 	return new Promise(
 		(
-			resolve: (value: SingInData | null) => void,
+			resolve: (value: SingInData) => void,
 			reject: (value: SingInError | null) => void,
 		) => {
 			setTimeout(async () => {
 				const { data, error } = await signIn.email({ email, password });
-				error ? resolve(data) : reject(error);
+				error ? reject(error) : resolve(data.user);
 			}, 2000);
 		},
 	);
@@ -57,10 +57,8 @@ export function SingInForm({
 }: ComponentPropsWithoutRef<"div">) {
 	const [formDisable, setFormDisable] = useState(false);
 
-	// const fetcher = useFetcher();
 	const navigate = useNavigate();
 	const form = useRemixForm<InferInput<typeof SingInSchema>>({
-		// fetcher,
 		disabled: formDisable,
 		mode: "onSubmit",
 		stringifyAllValues: false,
@@ -70,18 +68,13 @@ export function SingInForm({
 				setFormDisable(true);
 				toast.promise(toastPromise({ email, password }), {
 					loading: "Loading...",
-					success(user) { 
-						navigate("./success");
-						return `Created user with email ${user?.email}`;
+					success(user) {
+						navigate("/dashboard");
+						return `Sing In with email ${user?.email}`;
 					},
 					error: (error) => `${error.message}`,
 					finally: () => setFormDisable(false),
 				});
-				// if (error) {
-				// 	alert({ error });
-				// 	return;
-				// }
-				// navigate("/dashboard");
 			},
 		},
 		submitConfig: {

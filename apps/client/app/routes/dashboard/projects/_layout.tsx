@@ -1,18 +1,23 @@
 import { Outlet } from "react-router";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "@package/ui/components/card";
 
-export default function Example() {
+export default function ProjectsLayout() {
 	return (
-		<>
-			<header className="bg-white shadow">
-				<div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-					<h1 className="text-3xl font-bold tracking-tight text-gray-900 capitalize">
-						Projects
-					</h1>
-				</div>
-			</header>
-			<main className="mx-auto min-h-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+		<Card>
+			<CardHeader>
+				<CardTitle>Projects</CardTitle>
+				<CardDescription>Manage your projects</CardDescription>
+			</CardHeader>
+			<CardContent>
 				<Outlet />
-			</main>
-		</>
+			</CardContent>
+		</Card>
 	);
 }

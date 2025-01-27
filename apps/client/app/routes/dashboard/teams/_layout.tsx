@@ -8,6 +8,14 @@ import {
 } from "react-router";
 // import { useMemo } from "react";
 import SectionNav from "./section-head";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "@package/ui/components/card";
 
 export default function DashboardTeams() {
 	// const titlePage: string = "teams";
@@ -99,10 +107,16 @@ export default function DashboardTeams() {
 					</div>
 				</div>
 			</header> */}
-			<main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-6 shadow-inner">
-				<SectionNav />
-				<Outlet />
-			</main>
+			<Card>
+				<CardHeader>
+					<CardTitle>Teams</CardTitle>
+					<CardDescription>Manage your teams and team members.</CardDescription>
+				</CardHeader>
+				<CardContent>
+					{/* <SectionNav /> */}
+					<Outlet />
+				</CardContent>
+			</Card>
 		</>
 	);
 }
