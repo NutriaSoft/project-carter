@@ -24,8 +24,8 @@ export default function DashboardLayout() {
 		<SidebarProvider defaultOpen={Boolean(cookies["sidebar:state"]) ?? false}>
 			<AppSidebar />
 			<SidebarInset className="">
-				<Navbar className="fixed z-50 w-[calc(100%-18rem)] md:w-[calc(100%-16rem)] bg-background" />
-				<section className="absolute z-0 flex flex-1 flex-col gap-4 p-4 pt-0 mt-16">
+				<Navbar className="fixed w-full md:w-[calc(100%-16rem)]  z-50 bg-background" />
+				<section className="absolute w-full z-0 flex flex-1 flex-col gap-4 p-4 pt-0 mt-16">
 					<Outlet />
 				</section>
 			</SidebarInset>

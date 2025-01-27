@@ -23,8 +23,8 @@ export const ProjectRoutes = [
 		icon: PieChart,
 	},
 	{
-		name: "Travel",
-		url: "#",
+		name: "members",
+		url: "./members",
 		icon: lucide_map,
 	},
 ];
