@@ -26,7 +26,7 @@ import type { useRemixForm } from "@package/ui/hooks/use-remix-form";
 import { cn } from "@package/ui/lib/utils";
 import { format } from "date-fns";
 import type { InferInput } from "valibot";
-import type { CreateProfileMemberSchema } from "./create-profile-member.schema";
+import type { CreateProfileMemberSchema } from "./create.schema";
 
 interface CreateProfileFormProps {
 	form: ReturnType<

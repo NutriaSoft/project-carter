@@ -2,9 +2,9 @@ import { valibotResolver } from "@hookform/resolvers/valibot";
 import { getValidatedFormData } from "@package/ui/hooks/use-remix-form";
 import type { InferInput } from "valibot";
 import type { Route } from "./+types/route";
-import { CreateProfileMemberSchema } from "./create-profile-member.schema";
+import { CreateProfileMemberSchema } from "./create.schema";
 
-export default async function CreateMemberAction({
+export async function CreateMemberAction({
 	request,
 }: Route.ActionArgs) {
 	const {

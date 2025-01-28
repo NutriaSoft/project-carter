@@ -20,7 +20,7 @@ import { Badge } from "@package/ui/components/badge";
 import { Button } from "@package/ui/components/button";
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import type { authClient } from "~/.client/better-auth";
+import { authClient } from "~/.client/better-auth";
 
 export const columns: ColumnDef<typeof authClient.$Infer.Session.user>[] = [
 	{
@@ -43,13 +43,24 @@ export const columns: ColumnDef<typeof authClient.$Infer.Session.user>[] = [
 		},
 	},
 	{
+		header: "title",
+		cell({ row }) {
+			return (
+				<section className="flex flex-col gap-x-4">
+					<h6 className="font-semibold capitalize text-base">
+						{row.original.role}
+					</h6>
+					<p className="text-xs">{row.original.email}</p>
+				</section>
+			);
+		},
+	},
+	{
 		accessorKey: "phone",
 		header: "phone",
 		cell({ row }) {
 			return (
 				<Button asChild variant="outline">
-					<PhoneIcon />
-					{row.original.phone}
 					<a
 						href={`tel:${row.original.phone}`}
 						className="hover:underline cursor-pointer underline-offset-4"
@@ -111,15 +122,61 @@ export const columns: ColumnDef<typeof authClient.$Infer.Session.user>[] = [
 	},
 
 	{
+		header: "create at",
+		cell({ row }) {
+			return (
+				<span className="w-60 block">
+					{format(row.original.createdAt, "Pp")}
+				</span>
+			);
+		},
+	},
+
+	{
+		accessorKey: "name",
+		header: "update at",
+
+		cell({ row }) {
+			return (
+				<span className="w-60 block">
+					{format(row.original.updatedAt, "Pp")}
+				</span>
+			);
+		},
+	},
+
+	{
 		accessorKey: "id",
 		header: "options",
 		cell({ row }) {
 			return (
 				<section className=" flex flex-row gap-x-4">
-					<Button variant="outline" size="icon">
+					<Button
+						variant="outline"
+						size="icon"
+						onClick={async () => {
+							const { data, error } = await authClient.admin.unbanUser({
+								userId: row.original.id,
+							});
+
+							console.log({ data, error });
+						}}
+					>
 						<PencilIcon />
 					</Button>
-					<Button variant="outline" size="icon">
+					<Button
+						variant="outline"
+						size="icon"
+						onClick={async () => {
+							const { data, error } = await authClient.admin.banUser({
+								userId: row.original.id,
+								banReason: "Spamming", // Optional (if not provided, the default ban reason will be used - No reason)
+								banExpiresIn: 60 * 60 * 24 * 7, // Optional (if not provided, the ban will never expire)
+							});
+
+							console.log({ data, error });
+						}}
+					>
 						<UserMinusIcon />
 					</Button>
 				</section>

@@ -9,7 +9,7 @@ import {
 	string,
 } from "valibot";
 
-export const CreateProfileMemberSchema = object({
+export const CreateMemberSchema = object({
 	role: pipe(
 		string("Your role must be a string."),
 		nonEmpty("Please enter your role."),
