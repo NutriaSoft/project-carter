@@ -1,8 +1,8 @@
-import { DataTable } from "./datatable";
-import type { Route } from "./+types/route";
 import { useLoaderData } from "react-router";
 import { authClient } from "~/.client/better-auth";
+import type { Route } from "./+types/route";
 import { columns } from "./columns";
+import { DataTable } from "./datatable";
 
 export async function clientLoader({ request }: Route.ClientLoaderArgs) {
 	const { data, error } = await authClient.admin.listUsers({
@@ -25,6 +25,9 @@ export function HydrateFallback() {
 
 export default function MembersIndex() {
 	const loaderData = useLoaderData<typeof clientLoader>();
-
-	return <DataTable columns={columns} data={loaderData?.users} />;
+	return (
+		<section>
+			<DataTable columns={columns} data={loaderData?.users} />
+		</section>
+	);
 }

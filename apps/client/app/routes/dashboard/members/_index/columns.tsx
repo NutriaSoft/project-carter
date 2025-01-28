@@ -3,17 +3,24 @@ import {
 	AvatarFallback,
 	AvatarImage,
 } from "@package/ui/components/avatar";
-import { format } from "date-fns";
 import {
 	HoverCard,
 	HoverCardContent,
 	HoverCardTrigger,
 } from "@package/ui/components/hover-card";
 
-import type { ColumnDef } from "@tanstack/react-table";
+import {
+	CalendarIcon,
+	HandRaisedIcon,
+	PencilIcon,
+	PhoneIcon,
+	UserMinusIcon,
+} from "@heroicons/react/20/solid";
 import { Badge } from "@package/ui/components/badge";
+import { Button } from "@package/ui/components/button";
+import type { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
 import type { authClient } from "~/.client/better-auth";
-import { CalendarIcon, HandRaisedIcon } from "@heroicons/react/20/solid";
 
 export const columns: ColumnDef<typeof authClient.$Infer.Session.user>[] = [
 	{
@@ -36,12 +43,31 @@ export const columns: ColumnDef<typeof authClient.$Infer.Session.user>[] = [
 		},
 	},
 	{
+		accessorKey: "phone",
+		header: "phone",
+		cell({ row }) {
+			return (
+				<Button asChild variant="outline">
+					<PhoneIcon />
+					{row.original.phone}
+					<a
+						href={`tel:${row.original.phone}`}
+						className="hover:underline cursor-pointer underline-offset-4"
+					>
+						<PhoneIcon />
+						{row.original.phone}
+					</a>
+				</Button>
+			);
+		},
+	},
+	{
 		accessorKey: "banned",
 		header: "status",
 		cell({ row }) {
 			return (
 				<section>
-					{!row.original.banned ? (
+					{row.original.banned ? (
 						<HoverCard>
 							<HoverCardTrigger>
 								<Badge
@@ -57,7 +83,7 @@ export const columns: ColumnDef<typeof authClient.$Infer.Session.user>[] = [
 									<div className="flex flex-col">
 										<span className="text-xs font-semibold">Ban Reason</span>
 										<p className="text-xs text-muted-foreground">
-											{row.original.banReason} dsadasdasdas
+											{row.original.banReason}
 										</p>
 									</div>
 								</div>
@@ -66,15 +92,36 @@ export const columns: ColumnDef<typeof authClient.$Infer.Session.user>[] = [
 									<div className="flex flex-col">
 										<span className="text-xs font-semibold">Expire in</span>
 										<p className="text-xs text-muted-foreground">
-											{format(row.original.banExpires, "MM/dd/yyyy")}
+											{row.original.banExpires
+												? format(row.original.banExpires, "MM/dd/yyyy")
+												: "forever"}
 										</p>
 									</div>
 								</div>
 							</HoverCardContent>
 						</HoverCard>
 					) : (
-						<Badge variant="secondary">active</Badge>
+						<Badge variant="success" className="capitalize cursor-pointer">
+							active
+						</Badge>
 					)}
+				</section>
+			);
+		},
+	},
+
+	{
+		accessorKey: "id",
+		header: "options",
+		cell({ row }) {
+			return (
+				<section className=" flex flex-row gap-x-4">
+					<Button variant="outline" size="icon">
+						<PencilIcon />
+					</Button>
+					<Button variant="outline" size="icon">
+						<UserMinusIcon />
+					</Button>
 				</section>
 			);
 		},
