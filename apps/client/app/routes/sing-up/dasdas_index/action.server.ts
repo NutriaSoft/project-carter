@@ -20,3 +20,4 @@ export default async function SingUpAction({ request }: Route.ActionArgs) {
 	console.log("data:", JSON.stringify(data, null, 4));
 	return data;
 }
+

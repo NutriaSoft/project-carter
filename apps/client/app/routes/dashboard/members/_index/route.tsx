@@ -27,7 +27,7 @@ export default function MembersIndex() {
 	const loaderData = useLoaderData<typeof clientLoader>();
 	return (
 		<section>
-			<DataTable columns={columns} data={loaderData?.users} />
+			<DataTable columns={columns} data={loaderData?.users ?? []} />
 		</section>
 	);
 }

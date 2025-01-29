@@ -1,40 +1,39 @@
 import { PrismaClient } from "@prisma/client";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { admin, openAPI, organization } from "better-auth/plugins";
+import { admin, magicLink, openAPI, organization } from "better-auth/plugins";
 import { smtp_transporter } from "./smtp";
 
 const prisma = new PrismaClient();
 
 export const server = betterAuth({
 	baseURL: "http://localhost:8888",
+	secret: "AWESOME SECRET",
 	trustedOrigins: ["http://localhost:5173", "http://127.0.0.1:5173"],
-	plugins: [admin(), organization(), openAPI()],
 	database: prismaAdapter(prisma, {
 		provider: "sqlite",
 	}),
-	user: {
-		additionalFields: {
-			lastName: {
-				type: "string",
-				required: true,
+	plugins: [
+		admin(),
+		organization(),
+		openAPI(),
+		magicLink({
+			disableSignUp: false,
+			sendMagicLink: async ({ email, token, url }, request) => {
+				// send email to user.
+				console.log("EMAIL 	SEND: %s", email);
+				console.log("TOKEN 	SEND: %s", token);
+				console.log("URL 	SEND: %s", `${url}?token=${token}`);
 			},
-			firstName: {
-				type: "string",
-				required: true,
-			},
-			phone: {
-				type: "string",
-				required: true,
-			},
-			birthday: {
-				type: "date",
-				required: false,
-			},
-		},
-	},
+		}),
+	],
+
 	logger: {
 		disabled: false,
+	},
+	emailAndPassword: {
+		enabled: true,
+		requireEmailVerification: true,
 	},
 	emailVerification: {
 		sendEmailVerificationOnSignUp: true,
@@ -54,9 +53,25 @@ export const server = betterAuth({
 			console.log("Message sent: %s", messageId); // Message sent: <d786aa62-4e0a-070a-47ed-0b0666549519@ethereal.email>
 		},
 	},
-	emailAndPassword: {
-		enabled: true,
-		requireEmailVerification: true,
+	user: {
+		additionalFields: {
+			lastName: {
+				type: "string",
+				required: false,
+			},
+			firstName: {
+				type: "string",
+				required: false,
+			},
+			phone: {
+				type: "string",
+				required: false,
+			},
+			birthday: {
+				type: "date",
+				required: false,
+			},
+		},
 	},
 });
 
