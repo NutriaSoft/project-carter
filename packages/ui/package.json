@@ -3,7 +3,9 @@
 	"version": "0.0.0",
 	"type": "module",
 	"private": true,
+	"module": "index.js",
 	"scripts": {
+		"react-email:dev": "email dev",
 		"type-check": "tsc --noEmit"
 	},
 	"dependencies": {
@@ -22,6 +24,7 @@
 		"@radix-ui/react-slot": "^1.1.1",
 		"@radix-ui/react-toast": "^1.2.4",
 		"@radix-ui/react-tooltip": "^1.1.7",
+		"@react-email/components": "0.0.30",
 		"@tanstack/react-table": "^8.20.6",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
@@ -29,9 +32,9 @@
 		"date-fns": "^4.1.0",
 		"lucide-react": "^0.473.0",
 		"next-themes": "^0.4.4",
-		"react": "^19.0.0",
 		"react-day-picker": "^9.5.1",
-		"react-dom": "^19.0.0",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1",
 		"react-hook-form": "^7.54.2",
 		"react-phone-number-input": "^3.4.10",
 		"remix-hook-form": "^6.1.2",
@@ -48,15 +51,16 @@
 		"autoprefixer": "^10.4.20",
 		"postcss": "^8.4.47",
 		"react": "^18.3.1",
+		"react-email": "3.0.3",
 		"typescript": "^5.6.3"
 	},
-	"module": "index.js",
 	"exports": {
 		"./globals.css": "./src/styles/globals.css",
 		"./postcss.config": "./postcss.config.mjs",
 		"./tailwind.config": "./tailwind.config.ts",
 		"./lib/*": "./src/lib/*.ts",
 		"./components/*": "./src/components/*.tsx",
-		"./hooks/*": "./src/hooks/*.ts"
+		"./hooks/*": "./src/hooks/*.ts",
+		"./emails/*": "./src/emails/*.tsx"
 	}
 }
