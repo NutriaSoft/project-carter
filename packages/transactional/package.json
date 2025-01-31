@@ -1,0 +1,20 @@
+{
+	"name": "transactional",
+	"module": "index.ts",
+	"type": "module",
+	"devDependencies": {
+		"@types/bun": "latest",
+		"react-email": "3.0.3"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	},
+	"dependencies": {
+		"@react-email/components": "0.0.30",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1"
+	},
+	"scripts": {
+		"dev": "email dev"
+	}
+}

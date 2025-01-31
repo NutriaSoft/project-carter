@@ -41,7 +41,6 @@ clientLoader.hydrate = true;
 
 export default function SingUpIndex() {
 	const loaderData = useLoaderData<typeof clientLoader>();
-
 	const form = useRemixForm<InferInput<typeof SingUpSchema>>({
 		mode: "onSubmit",
 		resolver: valibotResolver(SingUpSchema),
