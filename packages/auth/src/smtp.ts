@@ -10,13 +10,3 @@ export const smtp_transporter = createTransport({
 		// pass: "jn7jnAPss4f63QBp6D",
 	},
 });
-
-export const verificationEmail = async (
-	user: User,
-	url: string,
-	token: string,
-) => {
-	const origin_url = new URL(url);
-
-	console.log(origin_url);
-};

@@ -55,12 +55,12 @@
 		"typescript": "^5.6.3"
 	},
 	"exports": {
-		"./globals.css": "./src/styles/globals.css",
+		"./globals.css": "./styles/globals.css",
 		"./postcss.config": "./postcss.config.mjs",
 		"./tailwind.config": "./tailwind.config.ts",
-		"./lib/*": "./src/lib/*.ts",
-		"./components/*": "./src/components/*.tsx",
-		"./hooks/*": "./src/hooks/*.ts",
-		"./emails/*": "./src/emails/*.tsx"
+		"./lib/*": "./lib/*.ts",
+		"./components/*": "./components/*.tsx",
+		"./hooks/*": "./hooks/*.ts",
+		"./emails/*": "./emails/*.tsx"
 	}
 }
