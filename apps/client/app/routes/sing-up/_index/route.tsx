@@ -61,7 +61,7 @@ export default function SingUpIndex() {
 			},
 		},
 		defaultValues: {
-			email: loaderData?.user.email ?? "",
+			email: loaderData?.user.email,
 		},
 	});
 

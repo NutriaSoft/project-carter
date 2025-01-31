@@ -14,5 +14,6 @@ export async function SingUpIndexClientLoader({
 	if (!data || error) {
 		return null;
 	}
+	
 	return { ...data };
 }
