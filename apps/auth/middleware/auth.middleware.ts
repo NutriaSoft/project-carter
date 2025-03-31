@@ -1,8 +1,22 @@
-import { server } from "@package/auth/src/server";
+import { auth } from "@package/better-auth/auth";
+import Elysia from "elysia";
 
 // user middleware (compute user and session and pass to routes)
-export const AuthMiddleware = async (request: Request) => {
-	const session = await server.api.getSession({ headers: request.headers });
-	if (!session) return { user: null, session: null };
-	return { user: session.user, session: session.session };
-};
+export const betterAuth = new Elysia({ name: "better-auth" })
+	.mount(auth.handler)
+	.macro({
+		auth: {
+			async resolve({ error, request: { headers } }) {
+				const session = await auth.api.getSession({
+					headers,
+				});
+
+				if (!session) return error(401);
+
+				return {
+					user: session.user,
+					session: session.session,
+				};
+			},
+		},
+	});

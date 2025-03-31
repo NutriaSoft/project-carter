@@ -41,7 +41,6 @@ yarn-error.log*
 
 apps/auth/prisma/client/
 
-/bun.lockb
 
-**/bun.lockb
+bun.lockb
 **/dev.db-journal

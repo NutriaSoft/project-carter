@@ -21,9 +21,9 @@
 		"forceConsistentCasingInFileNames": true,
 		"baseUrl": ".",
 		
-		"paths": {
-			"@package/ui/*": ["./*"]
-		},
+		// "paths": {
+		// 	"@package/ui/*": ["./*"]
+		// },
 
 		// Bundler mode
 		"moduleResolution": "bundler",

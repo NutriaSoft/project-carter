@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"@package/auth/*": ["./*"]
+			"@package/better-auth/*": ["./*"]
 		},
 		// Enable latest features
 		"lib": ["ESNext", "DOM"],

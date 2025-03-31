@@ -16,7 +16,7 @@
 		"@faker-js/faker": "^9.3.0",
 		"@headlessui/react": "^2.2.0",
 		"@heroicons/react": "^2.2.0",
-		"@package/auth": "workspace:*",
+		"@package/better-auth": "workspace:*",
 		"@package/ui": "workspace:*",
 		"@react-router/node": "^7.1.1",
 		"@react-router/serve": "^7.1.1",
